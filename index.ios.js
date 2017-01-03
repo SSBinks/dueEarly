@@ -17,7 +17,7 @@ export default class dueEarly extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!
+          Hello Shari!
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.ios.js
