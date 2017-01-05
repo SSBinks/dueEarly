@@ -1,6 +1,6 @@
+'use strict';
 import React, { Component } from 'react';
 import {
-
   AppRegistry,
   StyleSheet,
   Text,
@@ -8,7 +8,7 @@ import {
   ListView
 } from 'react-native';
 
-export default class Dashboard extends Component {
+ class Dashboard extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -33,12 +33,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#cddbf2',
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+    fontFamily: 'Chalkboard SE',
   },
   instructions: {
     textAlign: 'center',
@@ -46,3 +47,4 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+module.exports = Dashboard;

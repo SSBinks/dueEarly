@@ -3,12 +3,38 @@
  * https://github.com/facebook/react-native
  * @flow
  */
+ // 'use strict'
+import React, { Component } from 'react';
+import{
+  AppRegistry,
+  StyleSheet,
+  Text,
+  View,
+  NavigatorIOS
+} from 'react-native';
+var Root = require('./components/Root');
 
-import{AppRegistry} from 'react-native';
-import Root from './components/Root';
+class dueEarly extends Component {
+  render(){
+    return (
+      <NavigatorIOS
+      style={styles.container}
+      initialRoute={{
+        title: 'Due: Early',
+        component: Root,
+      }}/>
+    );
+  }
+}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#e1e8f4'
+  }
+});
 
-AppRegistry.registerComponent('dueEarly', () => Root);
-// import React, { Component } from 'react';
+// AppRegistry.registerComponent('dueEarly', () => DueEarly);
+//
 // import {
 //   AppRegistry,
 //   StyleSheet,
@@ -53,5 +79,5 @@ AppRegistry.registerComponent('dueEarly', () => Root);
 //     marginBottom: 5,
 //   },
 // });
-//
-// AppRegistry.registerComponent('dueEarly', () => dueEarly);
+
+AppRegistry.registerComponent('dueEarly', () => dueEarly);
