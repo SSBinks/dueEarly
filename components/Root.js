@@ -8,13 +8,21 @@ import {
   View,
   NavigatorIOS
 } from 'react-native';
+var moment = require('moment');
+var now = moment().format("dddd MMMM Do YYYY");
 var Dashboard = require('./Dashboard');
 class Root extends Component {
   render(){
-          console.log( "I am getting to the root!");
+    console.log( "I am getting to the root!");
     return (
       <View style={styles.container} >
+      <View style={styles.head} >
+      <Text style={styles.time}>
+      {now}
+      </Text>
+      </View>
       <Text style={styles.titles}>
+
       Hello Shari!
       </Text>
       </View>
@@ -25,8 +33,8 @@ class Root extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 65,
+    padding: 10,
     backgroundColor: '#cddbf2',
   },
   titles: {
@@ -35,10 +43,15 @@ const styles = StyleSheet.create({
     margin: 10,
     fontFamily: 'Chalkboard SE',
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  head: {
+      height: 25,
+      left: 10
+  },
+  time: {
+    fontFamily: 'Chalkboard SE',
+    fontSize: 15,
+    fontWeight: 'bold',
+
   },
 });
 module.exports = Root;
