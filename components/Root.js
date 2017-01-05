@@ -6,25 +6,40 @@ import {
   StyleSheet,
   Text,
   View,
+  ListView,
   NavigatorIOS
 } from 'react-native';
 var moment = require('moment');
 var now = moment().format("dddd MMMM Do YYYY");
 var Dashboard = require('./Dashboard');
 class Root extends Component {
+  constructor(props){
+    super(props);
+    const dailyTask = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+      dataSource: dailyTask.cloneWithRows([
+        {assignment: 'Into to losing my shit', due: 'today'},
+        {assignment: 'Giving up 101', due: 'today'},
+        {assignment: 'Marrying Rich and Other Alternatives', due: 'today'}
+      ])
+    };
+  }
   render(){
     console.log( "I am getting to the root!");
     return (
       <View style={styles.container} >
+      <Text style={styles.titles}>
+    Whats Due?
+      </Text>
       <View style={styles.head} >
       <Text style={styles.time}>
-      {now}
+      Today: {now}
       </Text>
       </View>
-      <Text style={styles.titles}>
-
-      Hello Shari!
-      </Text>
+      <ListView
+      dataSource={this.state.dataSource}
+      renderRow={(rowData) => <Text> {rowData.assignment}</Text>}
+      />
       </View>
     );
   }
@@ -35,21 +50,21 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 65,
     padding: 10,
-    backgroundColor: '#cddbf2',
+    backgroundColor: '#838487',
   },
   titles: {
     fontSize: 20,
-    // textAlign: 'center',
-    margin: 10,
-    fontFamily: 'Chalkboard SE',
+    textAlign: 'center',
+    margin: 5,
+    fontFamily: 'ChalkboardSE-Bold',
   },
   head: {
-      height: 25,
-      left: 10
+    height: 25,
+    left: 10
   },
   time: {
     fontFamily: 'Chalkboard SE',
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: 'bold',
 
   },
