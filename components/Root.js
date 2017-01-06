@@ -33,7 +33,7 @@ class Root extends Component {
       <View style={styles.rowContainer}>
       <View style={styles.textContainter}>
       <Text style={styles.toDo}
-      numberOfLines={2}> Assignment: {rowData.assignment} {'\n'}Course: {rowData.course}</Text>
+      numberOfLines={2}>Assignment: {rowData.assignment} {'\n'}Course: {rowData.course}</Text>
       </View>
       </View>
       </View>
@@ -56,6 +56,20 @@ class Root extends Component {
       dataSource={this.state.dataSource}
       renderRow={this.renderRow.bind(this)}
       />
+      <View
+        adjustsFontSizeToFit={true}
+        style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8'>
+      <Text style={styles.menu}>OOO</Text>
+      </TouchableHighlight>
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8'>
+      <Text style={styles.menu}> ^^^</Text>
+      </TouchableHighlight>
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8'>
+      <Text style={styles.menu}> + </Text>
+      </TouchableHighlight>
+      </View>
+
       </View>
     );
   }
@@ -75,18 +89,16 @@ const styles = StyleSheet.create({
     fontFamily: 'ChalkboardSE-Bold',
   },
   head: {
-    height: 25,
-    left: 10
+    height: 10,
+    left: 10,
   },
   time: {
     fontFamily: 'Chalkboard SE',
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: 'bold',
-
   },
   toDo: {
     fontFamily: 'Chalkboard SE',
-    // backgroundColor: 'pink',
   },
   rowContainer: {
     flexDirection: 'row',
@@ -97,8 +109,21 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
     backgroundColor: '#caf9db',
-
     height: 70,
+    borderRadius: 25,
   },
+  button: {
+    height: 50,
+    width: 70,
+    alignSelf: 'stretch',
+    backgroundColor: '#f9f6b8',
+    borderRadius: 10,
+    padding: 15,
+
+  },
+  menu: {
+    textAlign: 'center',
+
+  }
 });
 module.exports = Root;
