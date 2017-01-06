@@ -40,6 +40,15 @@ class Root extends Component {
       </TouchableHighlight>
     );
   }
+  onInProgressPressed(){
+    console.log("You want to see what is in Progress yay!");
+  }
+  onClassesPressed(){
+    console.log("You are trying to see some classes");
+  }
+  onAddPressed(){
+    console.log('You Pressed Add!');
+  }
   render(){
     console.log( "I am getting to the root!");
     return (
@@ -59,17 +68,16 @@ class Root extends Component {
       <View
         adjustsFontSizeToFit={true}
         style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8'>
-      <Text style={styles.menu}>OOO</Text>
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onInProgressPressed.bind(this)}>
+      <Text style={styles.menu} >O O O</Text>
       </TouchableHighlight>
-      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8'>
-      <Text style={styles.menu}> ^^^</Text>
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onClassesPressed.bind(this)}>
+      <Text style={styles.menu} onPress={this.onClassesPressed.bind(this)}> ^^^</Text>
       </TouchableHighlight>
-      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8'>
-      <Text style={styles.menu}> + </Text>
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onAddPressed.bind(this)}>
+      <Text style={styles.menu} > + </Text>
       </TouchableHighlight>
       </View>
-
       </View>
     );
   }
