@@ -7,7 +7,8 @@ import {
   Text,
   View,
   ListView,
-  NavigatorIOS
+  NavigatorIOS,
+  TouchableHighlight
 } from 'react-native';
 var moment = require('moment');
 var now = moment().format("dddd MMMM Do YYYY");
@@ -18,18 +19,33 @@ class Root extends Component {
     const dailyTask = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: dailyTask.cloneWithRows([
-        {assignment: 'Into to losing my shit', due: 'today'},
-        {assignment: 'Giving up 101', due: 'today'},
-        {assignment: 'Marrying Rich and Other Alternatives', due: 'today'}
+        {assignment: 'propsal', course: 'Intro to losing my shit', due: 'today'},
+        {assignment: 'blank sheet of paper', course: 'Giving up 101', due: 'today'},
+        {assignment: 'get hair done', course: 'Marrying Rich and Other Alternatives', due: 'today'}
       ])
     };
+  }
+  renderRow(rowData, sectionID, rowID){
+    return(
+      <TouchableHighlight
+      underlayColor='#dddddd'>
+      <View>
+      <View style={styles.rowContainer}>
+      <View style={styles.textContainter}>
+      <Text style={styles.toDo}
+      numberOfLines={2}> Assignment: {rowData.assignment} {'\n'}Course: {rowData.course}</Text>
+      </View>
+      </View>
+      </View>
+      </TouchableHighlight>
+    );
   }
   render(){
     console.log( "I am getting to the root!");
     return (
       <View style={styles.container} >
       <Text style={styles.titles}>
-    Whats Due?
+      Whats Due?
       </Text>
       <View style={styles.head} >
       <Text style={styles.time}>
@@ -38,7 +54,7 @@ class Root extends Component {
       </View>
       <ListView
       dataSource={this.state.dataSource}
-      renderRow={(rowData) => <Text> {rowData.assignment}</Text>}
+      renderRow={this.renderRow.bind(this)}
       />
       </View>
     );
@@ -67,6 +83,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
 
+  },
+  toDo: {
+    fontFamily: 'Chalkboard SE',
+    // backgroundColor: 'pink',
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    // width: 150,
+  },
+  textContainter: {
+    flex: 1,
+    padding: 15,
+    backgroundColor: '#caf9db',
+
+    height: 70,
   },
 });
 module.exports = Root;
