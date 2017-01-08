@@ -1,75 +1,75 @@
 //This file will eventually control the state of the application and the navigation
 
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   ListView,
-  NavigatorIOS,
   TouchableHighlight
 } from 'react-native';
-var moment = require('moment');
-var now = moment().format("dddd MMMM Do YYYY");
-var Dashboard = require('./Dashboard');
+
+const moment = require('moment');
+
+const now = moment().format('dddd MMMM Do YYYY');
+const Dashboard = require('./Dashboard');
+
 class Root extends Component {
-  constructor(props){
+
+  constructor(props) {
     super(props);
-    const dailyTask = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    const dailyTask = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       dataSource: dailyTask.cloneWithRows([
-        {assignment: 'propsal', course: 'Intro to losing my shit', due: 'today'},
-        {assignment: 'blank sheet of paper', course: 'Giving up 101', due: 'today'},
-        {assignment: 'get hair done', course: 'Marrying Rich and Other Alternatives', due: 'today'}
+        { assignment: 'propsal', course: 'Intro to losing my shit', due: 'today' },
+        { assignment: 'blank sheet of paper', course: 'Giving up 101', due: 'today' },
+        { assignment: 'get hair done', course: 'Marrying Rich and Other Alternatives', due: 'today' }
       ])
     };
   }
-  renderRow(rowData, sectionID, rowID){
-    return(
+  onAddPressed() {
+    this.props.navigator.push({
+      title: 'Schedule An Assignment',
+      component: Dashboard,
+    });
+    console.log('You Pressed Add!');
+  }
+  onClassesPressed() {
+    console.log('You are trying to see some classes');
+  }
+  onInProgressPressed() {
+    console.log('You want to see what is in Progress yay!');
+  }
+
+  renderRow(rowData) {
+    return (
       <TouchableHighlight
-      underlayColor='#dddddd'>
-      <View>
-      <View style={styles.rowContainer}>
-      <View style={styles.textContainter}>
-      <Text style={styles.toDo}
-      numberOfLines={2}>Assignment: {rowData.assignment} {'\n'}Course: {rowData.course}</Text>
-      </View>
-      </View>
+        underlayColor='#dddddd'
+      >
+        <View>
+          <View style={styles.rowContainer}>
+            <View style={styles.textContainter}>
+              <Text
+                style={styles.toDo}
+                numberOfLines={2}
+              >Assignment: {rowData.assignment} {'\n'}Course: {rowData.course}
+              </Text>
+            </View>
+          </View>
       </View>
       </TouchableHighlight>
     );
   }
-  onInProgressPressed(){
-    console.log("You want to see what is in Progress yay!");
-  }
-  onClassesPressed(){
-    console.log("You are trying to see some classes");
-  }
-  onAddPressed(){
-    console.log('You Pressed Add!');
-  }
-  render(){
-    console.log( "I am getting to the root!");
+
+  render() {
+    console.log('I am getting to the root!');
     return (
       <View style={styles.container} >
-      <Text style={styles.titles}>
-      Whats Due?
-      </Text>
-      <View style={styles.head} >
-      <Text style={styles.time}>
-      Today: {now}
-      </Text>
-      </View>
-      <ListView
-      dataSource={this.state.dataSource}
-      renderRow={this.renderRow.bind(this)}
-      />
       <View
-        adjustsFontSizeToFit={true}
-        style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+      style={styles.topMenu}
+      >
       <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onInProgressPressed.bind(this)}>
-      <Text style={styles.menu} >O O O</Text>
+        <Text style={styles.menu} >O O O</Text>
       </TouchableHighlight>
       <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onClassesPressed.bind(this)}>
       <Text style={styles.menu} onPress={this.onClassesPressed.bind(this)}> ^^^</Text>
@@ -78,6 +78,23 @@ class Root extends Component {
       <Text style={styles.menu} > + </Text>
       </TouchableHighlight>
       </View>
+      <Text style={styles.titles}>
+      Whats Due?
+      </Text>
+      <View
+      style={styles.head}
+      >
+      <Text
+      style={styles.time}
+      >
+      Today: {now}
+      </Text>
+      </View>
+      <ListView
+      style={{ height: 500 }}
+      dataSource={this.state.dataSource}
+      renderRow={this.renderRow.bind(this)}
+      />
       </View>
     );
   }
@@ -129,9 +146,15 @@ const styles = StyleSheet.create({
     padding: 15,
 
   },
+  topMenu: {
+    borderBottomColor: 'white',
+    paddingBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   menu: {
     textAlign: 'center',
-
   }
 });
+
 module.exports = Root;

@@ -5,19 +5,19 @@
 */
 // 'use strict'
 import React, { Component } from 'react';
-import{
+import {
   AppRegistry,
   StyleSheet,
-  Text,
-  View,
   NavigatorIOS
 } from 'react-native';
-var Root = require('./components/Root');
+
+const Root = require('./components/Root');
 
 class dueEarly extends Component {
-  render(){
+  render() {
     return (
-      <NavigatorIOS style={styles.container}
+      <NavigatorIOS
+      style={styles.container}
       barTintColor='#000'
       titleTextColor='#fff'
       initialRoute={{
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#DAF6FF'
   }
 });
-
 
 
 AppRegistry.registerComponent('dueEarly', () => dueEarly);
