@@ -7,8 +7,9 @@ import {
   TextInput,
   PickerIOS,
   DatePickerIOS,
+  TouchableHighlight
 } from 'react-native';
-
+const Course = require('./Course');
 //For the picker of classes
 const PickerItemIOS = PickerIOS.Item;
 
@@ -73,6 +74,11 @@ class Dashboard extends Component {
     console.log('DAte is a changin');
     this.setState({ date: date });
   };
+  onCourseSelection(){
+    this.props.navigator.push({
+      component: Course
+    });
+  }
   render() {
     const classes = COURSES[this.state.course];
     const selection = classes.title + ' ' + classes.time;
@@ -89,7 +95,6 @@ class Dashboard extends Component {
         <View style={styles.input}>
           <TextInput
             style={{ textDecorationColor: 'black', fontWeight: 'bold', height: 30, fontSize: 15 }}
-      // multiline={true}
             placeholder='My new assignment'
             placeholderTextColor='yellow'
             numberOfLines={2}
@@ -119,11 +124,14 @@ class Dashboard extends Component {
     )}
     </PickerIOS>
 
-        <View style={styles.headingContainer}>
+        <TouchableHighlight
+        style={styles.headingContainer}
+        onPress={this.onCourseSelection.bind(this)}
+        >
           <Text style={styles.heading}>
             Course
           </Text>
-        </View>
+        </TouchableHighlight>
 
         <PickerIOS
         itemStyle={styles.picker}

@@ -13,7 +13,7 @@ const moment = require('moment');
 
 const now = moment().format('dddd MMMM Do YYYY');
 const Dashboard = require('./Dashboard');
-
+const Course = require('./Course');
 class Root extends Component {
 
   constructor(props) {
@@ -35,6 +35,10 @@ class Root extends Component {
     console.log('You Pressed Add!');
   }
   onClassesPressed() {
+    this.props.navigator.push({
+      title: 'My Courses',
+      component: Course
+    });
     console.log('You are trying to see some classes');
   }
   onInProgressPressed() {
