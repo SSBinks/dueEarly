@@ -6,7 +6,8 @@ import {
   Text,
   View,
   ListView,
-  TouchableHighlight
+  TouchableHighlight,
+
 } from 'react-native';
 
 const moment = require('moment');
@@ -14,11 +15,13 @@ const moment = require('moment');
 const now = moment().format('dddd MMMM Do YYYY');
 const Dashboard = require('./Dashboard');
 const Course = require('./Course');
+
 class Root extends Component {
 
   constructor(props) {
     super(props);
     const dailyTask = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.assignment = this.getCurrentAssignment();
     this.state = {
       dataSource: dailyTask.cloneWithRows([
         { assignment: 'propsal', course: 'Intro to losing my shit', due: 'today' },
@@ -27,6 +30,7 @@ class Root extends Component {
       ])
     };
   }
+
   onAddPressed() {
     this.props.navigator.push({
       title: 'Schedule An Assignment',
@@ -42,11 +46,25 @@ class Root extends Component {
     console.log('You are trying to see some classes');
   }
   onInProgressPressed() {
-    console.log('You want to see what is in Progress yay!');
+    console.log('You want to see what is in Progress yay!' + this.assignment);
+  }
+ getCurrentAssignment() {
+   console.log("HIIIII");
+    const today = moment();
+   fetch('http://localhost:8080/assign/2017-01-12T08:00:00.000Z', { method: 'GET' })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      this.assignment = responseJson.body;
+    })
+    .catch((error) => {
+      console.error("You don't want zero problems big fella" + error);
+    });
   }
 
   renderRow(rowData) {
+    console.log("This is the current assignment" + this.assignment);
     return (
+
       <TouchableHighlight
         underlayColor='#dddddd'
       >
