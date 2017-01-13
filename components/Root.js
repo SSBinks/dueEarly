@@ -51,8 +51,9 @@ class Root extends Component {
   }
   getCurrentAssignment() {
     console.log("HIIIII");
-    const today = moment();
-    fetch('http://localhost:8080/assign/2017-01-12T08:00:00.000Z')
+    const today = moment().format('MM-DD-YYYY');
+    console.log("Today is " + today);
+    fetch('http://localhost:8000/assign/' + today)
     .then((response) => response.json())
     .then((responseJson) => {
       this.assignment = responseJson;
