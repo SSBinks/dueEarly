@@ -20,14 +20,15 @@ class Root extends Component {
 
   constructor(props) {
     super(props);
-    const dailyTask = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.assignment = this.getCurrentAssignment();
+    console.log("First?");
+    this.assignment = [];
+    this.getCurrentAssignment();
+    this.dailyTask = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    console.log("Re-check the assignment" + this.assignment);
+
     this.state = {
-      dataSource: dailyTask.cloneWithRows([
-        { assignment: 'propsal', course: 'Intro to losing my shit', due: 'today' },
-        { assignment: 'blank sheet of paper', course: 'Giving up 101', due: 'today' },
-        { assignment: 'get hair done', course: 'Marrying Rich and Other Alternatives', due: 'today' }
-      ])
+      assignments: this.assignment,
+      dataSource: this.dailyTask.cloneWithRows(this.assignment)
     };
   }
 
@@ -48,13 +49,17 @@ class Root extends Component {
   onInProgressPressed() {
     console.log('You want to see what is in Progress yay!' + this.assignment);
   }
- getCurrentAssignment() {
-   console.log("HIIIII");
+  getCurrentAssignment() {
+    console.log("HIIIII");
     const today = moment();
-   fetch('http://localhost:8080/assign/2017-01-12T08:00:00.000Z', { method: 'GET' })
+    fetch('http://localhost:8080/assign/2017-01-12T08:00:00.000Z')
     .then((response) => response.json())
     .then((responseJson) => {
-      this.assignment = responseJson.body;
+      this.assignment = responseJson;
+
+      console.log( "Let's go to the Assignment!" + this.assignment);
+      this.setState({ assignments: this.assignment, dataSource: this.dailyTask.cloneWithRows(this.assignment) });
+      return this.assignment;
     })
     .catch((error) => {
       console.error("You don't want zero problems big fella" + error);
@@ -63,35 +68,38 @@ class Root extends Component {
 
   renderRow(rowData) {
     console.log("This is the current assignment" + this.assignment);
-    return (
+    if(this.assignment !== 'undefined') {
+      return (
 
-      <TouchableHighlight
+        <TouchableHighlight
         underlayColor='#dddddd'
-      >
+        >
         <View>
-          <View style={styles.rowContainer}>
-            <View style={styles.textContainter}>
-              <Text
-                style={styles.toDo}
-                numberOfLines={2}
-              >Assignment: {rowData.assignment} {'\n'}Course: {rowData.course}
-              </Text>
-            </View>
-          </View>
-      </View>
-      </TouchableHighlight>
-    );
+        <View style={styles.rowContainer}>
+        <View style={styles.textContainter}>
+
+        <Text
+        style={styles.toDo}
+        numberOfLines={2}
+        >Assignment: {rowData.title}
+        </Text>
+        </View>
+        </View>
+        </View>
+        </TouchableHighlight>
+      );
+    }
   }
 
   render() {
-    console.log('I am getting to the root!');
+    console.log('I am getting to the render!');
     return (
       <View style={styles.container} >
       <View
       style={styles.topMenu}
       >
       <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onInProgressPressed.bind(this)}>
-        <Text style={styles.menu} >O O O</Text>
+      <Text style={styles.menu} >O O O</Text>
       </TouchableHighlight>
       <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onClassesPressed.bind(this)}>
       <Text style={styles.menu} onPress={this.onClassesPressed.bind(this)}> ^^^</Text>
@@ -113,6 +121,7 @@ class Root extends Component {
       </Text>
       </View>
       <ListView
+      enableEmptySections={true}
       style={{ height: 500 }}
       dataSource={this.state.dataSource}
       renderRow={this.renderRow.bind(this)}
