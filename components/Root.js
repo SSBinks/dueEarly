@@ -26,13 +26,14 @@ class Root extends Component {
     this.getCurrentAssignment();
     this.dailyTask = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     console.log("Re-check the assignment" + this.assignment);
-
+    this.information = {};
     this.state = {
       assignments: this.assignment,
       dataSource: this.dailyTask.cloneWithRows(this.assignment),
       active: false,
       modalVisible: false,
       transparent: false,
+      info: this.information
     };
   }
 
@@ -61,14 +62,17 @@ class Root extends Component {
   _onUnhighlight = () => {
     this.setState({ active: false });
   };
-  setModalVisible( num, visible)  {
+  setModalVisible(num, visible, rowData) {
     console.log("Is it visible " + visible);
-      console.log("This was pressed " + num);
-    this.setState({ modalVisible: num });
-  };
-  _toggleTransparent = () => {
+    console.log("This was pressed " + num);
+    console.log('hopefully this is rowData' + rowData);
     this.setState({ transparent: !this.state.transparent });
+    this.setState({ modalVisible: num });
+    this.setState({ info: visible })
   };
+  // _toggleTransparent = () => {
+  //   this.setState({ transparent: !this.state.transparent });
+  // };
   getCurrentAssignment() {
     console.log("HIIIII");
     const today = moment().format('MM-DD-YYYY');
@@ -87,20 +91,18 @@ class Root extends Component {
     });
   }
 
-  renderRow(rowData) {
-    // console.log("This is the current row" + rowData.id);
 
+  renderRow(rowData) {
     return (
       <View>
       <TouchableHighlight
       underlayColor='#dddddd'
       // onHideUnderlay={this._onUnhighlight}
       // onShowUnderlay={this._onHighlight}
-      onPress={this.setModalVisible.bind(this, true)}
+      onPress={this.setModalVisible.bind(this, true, rowData)}
       >
       <View style={styles.rowContainer} >
       <View style={styles.textContainter}>
-
       <Text
       style={styles.toDo}
       numberOfLines={2}
@@ -108,11 +110,9 @@ class Root extends Component {
       </Text>
       </View>
       </View>
-
       </TouchableHighlight>
       </View>
     );
-
   }
 
   render() {
@@ -126,16 +126,27 @@ class Root extends Component {
       backgroundColor: '#ddd'
     };
     console.log('I am getting to the render!');
+    console.log( 'this is the assignment' + this.state.info.title);
     return (
       <View style={styles.container} >
-      <Modal
-      transparent={this.state.transparent}
-      visible={this.state.modalVisible}
-      >
-      <View style={[styles.container, modalBackgroundStyle]}>
-      <Text> Hi Chari </Text>
-      </View >
-      </Modal>
+        <Modal
+          transparent={this.state.transparent}
+          visible={this.state.modalVisible}
+        >
+          <View style={[styles.container, modalBackgroundStyle]}>
+            <View
+              style={[styles.innerContainer, innerContainerTransparentStyle]}
+
+            >
+            <Text onPress={this.setModalVisible.bind(this, false)}>
+            Assignment: {this.state.info.title} {'\n'}
+            Completion Date: {moment().format('MM-DD-YYYY')} {'\n'}
+            Progress: {this.state.info.progress} {'\n'}
+            </Text>
+            </View>
+          </View>
+        </Modal>
+
       <View
       style={styles.topMenu}
       >
@@ -184,6 +195,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 5,
     fontFamily: 'ChalkboardSE-Bold',
+  },
+  innerContainer: {
+    borderRadius: 10,
+    alignItems: 'center'
   },
   head: {
     height: 10,
