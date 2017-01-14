@@ -7,6 +7,7 @@ import {
   View,
   ListView,
   TouchableHighlight,
+  Modal,
 
 } from 'react-native';
 
@@ -28,7 +29,10 @@ class Root extends Component {
 
     this.state = {
       assignments: this.assignment,
-      dataSource: this.dailyTask.cloneWithRows(this.assignment)
+      dataSource: this.dailyTask.cloneWithRows(this.assignment),
+      active: false,
+      modalVisible: false,
+      transparent: false,
     };
   }
 
@@ -39,6 +43,7 @@ class Root extends Component {
     });
     console.log('You Pressed Add!');
   }
+
   onClassesPressed() {
     this.props.navigator.push({
       title: 'My Courses',
@@ -46,9 +51,24 @@ class Root extends Component {
     });
     console.log('You are trying to see some classes');
   }
+
   onInProgressPressed() {
     console.log('You want to see what is in Progress yay!' + this.assignment);
   }
+  _onHighlight = () => {
+    this.setState({ active: true });
+  };
+  _onUnhighlight = () => {
+    this.setState({ active: false });
+  };
+  setModalVisible( num, visible)  {
+    console.log("Is it visible " + visible);
+      console.log("This was pressed " + num);
+    this.setState({ modalVisible: num });
+  };
+  _toggleTransparent = () => {
+    this.setState({ transparent: !this.state.transparent });
+  };
   getCurrentAssignment() {
     console.log("HIIIII");
     const today = moment().format('MM-DD-YYYY');
@@ -68,34 +88,54 @@ class Root extends Component {
   }
 
   renderRow(rowData) {
-    console.log("This is the current assignment" + this.assignment);
-    if(this.assignment !== 'undefined') {
-      return (
+    // console.log("This is the current row" + rowData.id);
 
-        <TouchableHighlight
-        underlayColor='#dddddd'
-        >
-        <View>
-        <View style={styles.rowContainer}>
-        <View style={styles.textContainter}>
+    return (
+      <View>
+      <TouchableHighlight
+      underlayColor='#dddddd'
+      // onHideUnderlay={this._onUnhighlight}
+      // onShowUnderlay={this._onHighlight}
+      onPress={this.setModalVisible.bind(this, true)}
+      >
+      <View style={styles.rowContainer} >
+      <View style={styles.textContainter}>
 
-        <Text
-        style={styles.toDo}
-        numberOfLines={2}
-        >Assignment: {rowData.title}
-        </Text>
-        </View>
-        </View>
-        </View>
-        </TouchableHighlight>
-      );
-    }
+      <Text
+      style={styles.toDo}
+      numberOfLines={2}
+      >Assignment: {rowData.title}
+      </Text>
+      </View>
+      </View>
+
+      </TouchableHighlight>
+      </View>
+    );
+
   }
 
   render() {
+    var modalBackgroundStyle = {
+      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
+    };
+    var innerContainerTransparentStyle = this.state.transparent
+    ? {backgroundColor: '#fff', padding: 20 }
+    : null;
+    var activeButtonStyle = {
+      backgroundColor: '#ddd'
+    };
     console.log('I am getting to the render!');
     return (
       <View style={styles.container} >
+      <Modal
+      transparent={this.state.transparent}
+      visible={this.state.modalVisible}
+      >
+      <View style={[styles.container, modalBackgroundStyle]}>
+      <Text> Hi Chari </Text>
+      </View >
+      </Modal>
       <View
       style={styles.topMenu}
       >
