@@ -1,213 +1,244 @@
-'use strict';
+//This file will eventually control the state of the application and the navigation
+
 import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  PickerIOS,
-  DatePickerIOS,
-  TouchableHighlight
-} from 'react-native';
-const Course = require('./Course');
-//For the picker of classes
-const PickerItemIOS = PickerIOS.Item;
+  ListView,
+  TouchableHighlight,
+  Modal,
 
-//Class objects which will come in as JSOn?
-const COURSES = {
-  math: {
-    title: 'math',
-    time: '9:30'
-  },
-  science: {
-    title: 'science',
-    time: '10:30'
-  },
-  gym: {
-    title: 'gym',
-    time: '1:30'
-  },
-  AA: {
-    title: 'AA',
-    time: '8:30'
-  },
-  english: {
-    title: 'english',
-    time: '2:30'
-  },
-};
-const ASSIGNMENT_TYPES = {
-  termPaper: {
-    type: 'term paper',
-  },
-  final: {
-    type: 'final',
-  },
-  midterm: {
-    type: 'midterm',
-  },
-  exam: {
-    type: 'exam',
-  },
-  draft: {
-    type: 'draft',
-  },
-  reading: {
-    type: 'reading',
-  }
-};
+} from 'react-native';
+
+const moment = require('moment');
+
+const now = moment().format('dddd MMMM Do YYYY');
+const Assignment = require('./Assignment');
+const Course = require('./Course');
 
 class Dashboard extends Component {
-  static defaultProps = {
-    date: new Date(),
-  };
+
   constructor(props) {
     super(props);
+    console.log("First?");
+    this.assignment = [];
+    this.getCurrentAssignment();
+    this.dailyTask = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    console.log("Re-check the assignment" + this.assignment);
+    this.information = {};
     this.state = {
-      course: 'math',
-      date: this.props.date,
-      text: '',
-      deliverable: 'termPaper'
+      assignments: this.assignment,
+      dataSource: this.dailyTask.cloneWithRows(this.assignment),
+      active: false,
+      modalVisible: false,
+      transparent: false,
+      info: this.information
     };
   }
-  onDateChange = (date) => {
-    console.log('DAte is a changin');
-    this.setState({ date: date });
-  };
-  onCourseSelection(){
+
+  onAddPressed() {
     this.props.navigator.push({
+      title: 'Schedule An Assignment',
+      component: Assignment,
+    });
+    console.log('You Pressed Add!');
+  }
+
+  onClassesPressed() {
+    this.props.navigator.push({
+      title: 'My Courses',
       component: Course
     });
+    console.log('You are trying to see some classes');
   }
-  render() {
-    const classes = COURSES[this.state.course];
-    const selection = classes.title + ' ' + classes.time;
-    console.log(COURSES[this.state.course].title);
+
+  onInProgressPressed() {
+    console.log('You want to see what is in Progress yay!' + this.assignment);
+  }
+  _onHighlight = () => {
+    this.setState({ active: true });
+  };
+  _onUnhighlight = () => {
+    this.setState({ active: false });
+  };
+  setModalVisible(num, visible, rowData) {
+    console.log("Is it visible " + visible);
+    console.log("This was pressed " + num);
+    console.log('hopefully this is rowData' + rowData);
+    this.setState({ transparent: !this.state.transparent });
+    this.setState({ modalVisible: num });
+    this.setState({ info: visible })
+  };
+
+  getCurrentAssignment() {
+    console.log("HIIIII");
+    const today = moment().format('MM-DD-YYYY');
+    console.log("Today is " + today);
+    fetch('http://localhost:8000/assign/' + today)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      this.assignment = responseJson;
+
+      console.log( "Let's go to the Assignment!" + this.assignment);
+      this.setState({ assignments: this.assignment, dataSource: this.dailyTask.cloneWithRows(this.assignment) });
+      return this.assignment;
+    })
+    .catch((error) => {
+      console.error("You don't want zero problems big fella" + error);
+    });
+  }
+
+
+  renderRow(rowData) {
     return (
-        // This is the input for the assingment
-      <View style={styles.container}>
-        <View style={styles.headingContainer}>
-          <Text style={styles.heading}>
-            Assignment Name
-          </Text>
-        </View>
+      <View>
+      <TouchableHighlight
+      underlayColor='#dddddd'
+      // onHideUnderlay={this._onUnhighlight}
+      // onShowUnderlay={this._onHighlight}
+      onPress={this.setModalVisible.bind(this, true, rowData)}
+      >
+      <View style={styles.rowContainer} >
+      <View style={styles.textContainter}>
+      <Text
+      style={styles.toDo}
+      numberOfLines={2}
+      >Assignment: {rowData.title}
+      </Text>
+      </View>
+      </View>
+      </TouchableHighlight>
+      </View>
+    );
+  }
 
-        <View style={styles.input}>
-          <TextInput
-            style={{ textDecorationColor: 'black', fontWeight: 'bold', height: 30, fontSize: 15 }}
-            placeholder='My new assignment'
-            placeholderTextColor='yellow'
-            numberOfLines={2}
-            onChangeText={(text) => this.setState({ text })}
-            value={this.state.text}
-          />
-        </View>
-        {/*This is the selector for the type of assignment*/}
-        <View style={styles.headingContainer}>
-          <Text style={styles.heading}>
-            Assignment Type
-          </Text>
-        </View>
-        <PickerIOS
-        itemStyle={styles.picker}
-        selectedValue={this.state.deliverable}
-        onValueChange={(deliverable) => this.setState({ deliverable })}
+  render() {
+    var modalBackgroundStyle = {
+      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
+    };
+    var innerContainerTransparentStyle = this.state.transparent
+    ? {backgroundColor: '#f9f6b8', padding: 20 }
+    : null;
+    var activeButtonStyle = {
+      backgroundColor: '#ddd'
+    };
+    console.log('I am getting to the render!');
+    console.log( 'this is the assignment' + this.state.info.title);
+    return (
+      <View style={styles.container} >
+        <Modal
+          transparent={this.state.transparent}
+          visible={this.state.modalVisible}
         >
-      {Object.keys(ASSIGNMENT_TYPES).map((deliverable) => (
-        <PickerItemIOS
-        key={deliverable}
-        value={deliverable}
-        label={ASSIGNMENT_TYPES[deliverable].type}
-        />
-      )
-      // console.log(this.state.course);
-    )}
-    </PickerIOS>
+          <View style={[styles.container, modalBackgroundStyle]}>
+            <View
+              style={[styles.innerContainer, innerContainerTransparentStyle]}
+            >
+            <Text onPress={this.setModalVisible.bind(this, false)}>
+            Assignment: {this.state.info.title} {'\n'}
+            Completion Date: {moment().format('MM-DD-YYYY')} {'\n'}
+            Progress: {this.state.info.progress} {'\n'}
+            </Text>
+            </View>
+          </View>
+        </Modal>
 
-        <TouchableHighlight
-        style={styles.headingContainer}
-        onPress={this.onCourseSelection.bind(this)}
-        >
-          <Text style={styles.heading}>
-            Course
-          </Text>
-        </TouchableHighlight>
-
-        <PickerIOS
-        itemStyle={styles.picker}
-      selectedValue={this.state.course}
-      onValueChange={(course) => this.setState({ course })}
-        >
-      {Object.keys(COURSES).map((course) => (
-        <PickerItemIOS
-        key={course}
-        value={course}
-        label={COURSES[course].title}
-        />
-      )
-      // console.log(this.state.course);
-    )}
-    </PickerIOS>
-    <View style={styles.headingContainer}>
-    <Text style={styles.heading}>
-    Due Date
-    </Text>
-    </View>
-    <DatePickerIOS
-    style={styles.date}
-    date={this.state.date}
-    mode='date'
-    onDateChange={this.onDateChange}
-    />
-    <Text> This course is at {selection} </Text>
-    </View>
-  );
-}
+      <View
+      style={styles.topMenu}
+      >
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onInProgressPressed.bind(this)}>
+      <Text style={styles.menu} >O O O</Text>
+      </TouchableHighlight>
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onClassesPressed.bind(this)}>
+      <Text style={styles.menu} onPress={this.onClassesPressed.bind(this)}> ^^^</Text>
+      </TouchableHighlight>
+      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onAddPressed.bind(this)}>
+      <Text style={styles.menu} > + </Text>
+      </TouchableHighlight>
+      </View>
+      <Text style={styles.titles}>
+      Whats Due?
+      </Text>
+      <View
+      style={styles.head}
+      >
+      <Text
+      style={styles.time}
+      >
+      Today: {now}
+      </Text>
+      </View>
+      <ListView
+      enableEmptySections={true}
+      style={{ height: 500 }}
+      dataSource={this.state.dataSource}
+      renderRow={this.renderRow.bind(this)}
+      />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#838487',
     flex: 1,
     marginTop: 65,
-    padding: 5,
+    padding: 10,
+    backgroundColor: '#838487',
   },
-  label: {
+  titles: {
     fontSize: 20,
-    // textAlign: 'center',
-    margin: 10,
+    textAlign: 'center',
+    margin: 5,
+    fontFamily: 'ChalkboardSE-Bold',
+  },
+  innerContainer: {
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  head: {
+    height: 10,
+    left: 10,
+  },
+  time: {
+    fontFamily: 'Chalkboard SE',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  toDo: {
     fontFamily: 'Chalkboard SE',
   },
-  picker: {
-    fontSize: 25,
-    color: 'black',
-    fontWeight: 'bold',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 140,
-    backgroundColor: 'blue'
+  rowContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    // width: 150,
   },
+  textContainter: {
+    flex: 1,
+    padding: 15,
+    backgroundColor: '#caf9db',
+    height: 70,
+    borderRadius: 25,
+  },
+  button: {
+    height: 50,
+    width: 70,
+    alignSelf: 'stretch',
+    backgroundColor: '#f9f6b8',
+    borderRadius: 10,
+    padding: 15,
 
-  date: {
-    height: 170,
-    backgroundColor: 'blue',
-    justifyContent: 'center',
-    // alignItems: 'center',
   },
-  headingContainer: {
-    padding: 4,
-    backgroundColor: '#f6f7f8',
+  topMenu: {
+    borderBottomColor: 'white',
+    paddingBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  heading: {
-    fontWeight: '500',
-    fontSize: 14,
-  },
-  input: {
-    backgroundColor: '#838487',
-    borderColor: '#000000',
-    borderWidth: 1,
-    height: 40
+  menu: {
+    textAlign: 'center',
   }
-
 });
+
 module.exports = Dashboard;
