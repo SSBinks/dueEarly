@@ -8,6 +8,7 @@ import {
   ListView,
   TouchableHighlight,
   Modal,
+  Image
 
 } from 'react-native';
 
@@ -16,6 +17,7 @@ const moment = require('moment');
 const now = moment().format('dddd MMMM Do YYYY');
 const Assignment = require('./Assignment');
 const Course = require('./Course');
+const Pic = require('../util/yellow-note.png');
 
 class Dashboard extends Component {
 
@@ -103,8 +105,8 @@ class Dashboard extends Component {
       <View style={styles.textContainter}>
       <Text
       style={styles.toDo}
-      numberOfLines={2}
-      >Assignment: {rowData.title}
+      numberOfLines={1}
+      >{rowData.title}
       </Text>
       </View>
       </View>
@@ -126,7 +128,10 @@ class Dashboard extends Component {
     console.log('I am getting to the render!');
     console.log( 'this is the assignment' + this.state.info.title);
     return (
-      <View style={styles.container} >
+      <View
+      // source={Pic}
+      style={styles.container}
+      >
         <Modal
           transparent={this.state.transparent}
           visible={this.state.modalVisible}
@@ -157,9 +162,7 @@ class Dashboard extends Component {
       <Text style={styles.menu} > + </Text>
       </TouchableHighlight>
       </View>
-      <Text style={styles.titles}>
-      Whats Due?
-      </Text>
+
       <View
       style={styles.head}
       >
@@ -185,7 +188,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 65,
     padding: 10,
-    backgroundColor: '#838487',
+    // height: null,
+    // width: null,
+  backgroundColor: 'white'
   },
   titles: {
     fontSize: 20,
@@ -208,10 +213,13 @@ const styles = StyleSheet.create({
   },
   toDo: {
     fontFamily: 'Chalkboard SE',
+    textAlign: 'center'
   },
   rowContainer: {
     flexDirection: 'row',
     padding: 10,
+    shadowColor: 'black',
+    shadowOpacity: 30,
     // width: 150,
   },
   textContainter: {
@@ -220,6 +228,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#caf9db',
     height: 70,
     borderRadius: 25,
+    justifyContent: 'center'
   },
   button: {
     height: 50,
@@ -228,6 +237,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f6b8',
     borderRadius: 10,
     padding: 15,
+    shadowColor: 'black',
+    shadowOpacity: 30,
 
   },
   topMenu: {

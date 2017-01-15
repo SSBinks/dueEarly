@@ -29,6 +29,7 @@ class dueEarly extends Component {
     return (
       <NavigatorIOS
       initialRoute={{
+        navigationBarHidden: true,
         component: Homescreen,
         title: 'Home',
       }}

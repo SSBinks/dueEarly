@@ -14,6 +14,10 @@ class Homescreen extends Component {
 
   onTrigger() {
     this.props.navigator.push({
+      barTintColor: 'white',
+      shawdowHidden: true,
+      tintColor: 'black',
+      translucent: true,
       title: 'Whats Due?',
       component: Dashboard,
     });
