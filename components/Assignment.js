@@ -79,16 +79,33 @@ class Assignment extends Component {
       component: Course
     });
   }
+  setTitle() {
+    console.log('You go to the edit');
+  }
+  makeNewAssignment(allThethings){
+    fetch(' http://localhost:8000/assign', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-form-urlencoded'
+      },
+      body: JSON.stringfy({
+        title: allThethings.title,
+        dueDate: allThethings.date,
+        complete: allThethings.complete,
+        progress: allThethings.progress
+      })
+    });
+  }
   render() {
     const classes = COURSES[this.state.course];
     const selection = classes.title + ' ' + classes.time;
-    console.log(COURSES[this.state.course].title);
+    // console.log(COURSES[this.state.course].title);
     return (
         // This is the input for the assingment
       <View style={styles.container}>
         <View style={styles.headingContainer}>
           <Text style={styles.heading}>
-            Assignment Name
+            Assignment Name: {this.state.text}
           </Text>
         </View>
 
@@ -100,6 +117,7 @@ class Assignment extends Component {
             numberOfLines={2}
             onChangeText={(text) => this.setState({ text })}
             value={this.state.text}
+            onEndEditing={this.setTitle.bind(this)}
           />
         </View>
         {/*This is the selector for the type of assignment*/}
@@ -154,9 +172,11 @@ class Assignment extends Component {
     </Text>
     </View>
     <DatePickerIOS
+    minimumDate={this.props.date}
     style={styles.date}
     date={this.state.date}
     mode='date'
+    onResponderRelease={this.saveTheDate.bind(this)}
     onDateChange={this.onDateChange}
     />
     <Text> This course is at {selection} </Text>
