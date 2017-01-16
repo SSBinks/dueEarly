@@ -13,7 +13,9 @@
     "moment": "^2.17.1",
     "multer": "^1.2.1",
     "react": "15.4.1",
-    "react-native": "0.39.2"
+    "react-native": "0.39.2",
+    "react-native-dropdown": "0.0.6",
+    "react-native-modal-dropdown": "^0.4.1"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",

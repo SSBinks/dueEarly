@@ -17,7 +17,7 @@ const moment = require('moment');
 const now = moment().format('dddd MMMM Do YYYY');
 const Assignment = require('./Assignment');
 const Course = require('./Course');
-const Pic = require('../util/yellow-note.png');
+
 
 class Dashboard extends Component {
 
@@ -64,14 +64,14 @@ class Dashboard extends Component {
   _onUnhighlight = () => {
     this.setState({ active: false });
   };
-  setModalVisible(num, visible, rowData) {
+  setModalVisible(visible, rowData, other) {
     console.log("Is it visible " + visible);
-    console.log("This was pressed " + num);
-    console.log('hopefully this is rowData' + rowData);
+    console.log("This was pressed " + rowData);
+    console.log('hopefully this is rowData' + other);
     this.setState({ transparent: !this.state.transparent });
-    this.setState({ modalVisible: num });
-    this.setState({ info: visible })
-  };
+    this.setState({ modalVisible: visible });
+    this.setState({ info: rowData })
+  }
 
   getCurrentAssignment() {
     console.log("HIIIII");
@@ -119,14 +119,11 @@ class Dashboard extends Component {
     var modalBackgroundStyle = {
       backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
     };
-    var innerContainerTransparentStyle = this.state.transparent
-    ? {backgroundColor: '#f9f6b8', padding: 20 }
+    const innerContainerTransparentStyle = this.state.transparent
+    ? { backgroundColor: '#f9f6b8', padding: 20 }
     : null;
-    var activeButtonStyle = {
-      backgroundColor: '#ddd'
-    };
     console.log('I am getting to the render!');
-    console.log( 'this is the assignment' + this.state.info.title);
+    console.log('this is the assignment' + this.state.info.title);
     return (
       <View
       // source={Pic}

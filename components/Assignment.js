@@ -7,9 +7,13 @@ import {
   TextInput,
   PickerIOS,
   DatePickerIOS,
-  TouchableHighlight
+  TouchableHighlight,
 } from 'react-native';
+
+import ModalDropdown from 'react-native-modal-dropdown';
+
 const Course = require('./Course');
+const moment = require('moment');
 //For the picker of classes
 const PickerItemIOS = PickerIOS.Item;
 
@@ -67,22 +71,29 @@ class Assignment extends Component {
       course: 'math',
       date: this.props.date,
       text: '',
-      deliverable: 'termPaper'
+      deliverable: 'termPaper',
+      modalVisible: false,
     };
   }
   onDateChange = (date) => {
     console.log('DAte is a changin');
     this.setState({ date: date });
+    this.setState({ modalVisible: false });
   };
-  onCourseSelection(){
+  onCourseSelection() {
     this.props.navigator.push({
       component: Course
     });
   }
   setTitle() {
-    console.log('You go to the edit');
+    console.log('hey');
   }
-  makeNewAssignment(allThethings){
+  setModalVisible(visible, othercrap) {
+    console.log('This is the first thing:' + visible);
+    console.log('This is the second thing:' + othercrap);
+    this.setState({ modalVisible: visible });
+  }
+  makeNewAssignment(allThethings) {
     fetch(' http://localhost:8000/assign', {
       method: 'POST',
       headers: {
@@ -96,13 +107,15 @@ class Assignment extends Component {
       })
     });
   }
+
   render() {
     const classes = COURSES[this.state.course];
     const selection = classes.title + ' ' + classes.time;
     // console.log(COURSES[this.state.course].title);
     return (
-        // This is the input for the assingment
+      // This is the input for the assingment
       <View style={styles.container}>
+
         <View style={styles.headingContainer}>
           <Text style={styles.heading}>
             Assignment Name: {this.state.text}
@@ -120,68 +133,84 @@ class Assignment extends Component {
             onEndEditing={this.setTitle.bind(this)}
           />
         </View>
-        {/*This is the selector for the type of assignment*/}
+      {/*This is the selector for the type of assignment*/}
         <View style={styles.headingContainer}>
           <Text style={styles.heading}>
             Assignment Type
           </Text>
         </View>
-        <PickerIOS
-        itemStyle={styles.picker}
-        selectedValue={this.state.deliverable}
-        onValueChange={(deliverable) => this.setState({ deliverable })}
-        >
-      {Object.keys(ASSIGNMENT_TYPES).map((deliverable) => (
-        <PickerItemIOS
-        key={deliverable}
-        value={deliverable}
-        label={ASSIGNMENT_TYPES[deliverable].type}
-        />
-      )
-      // console.log(this.state.course);
-    )}
-    </PickerIOS>
 
-        <TouchableHighlight
+        <PickerIOS
+          itemStyle={styles.picker}
+          selectedValue={this.state.deliverable}
+          onValueChange={(deliverable) => this.setState({ deliverable })}
+        >
+          {Object.keys(ASSIGNMENT_TYPES).map((deliverable) => (
+          <PickerItemIOS
+          key={deliverable}
+          value={deliverable}
+          label={ASSIGNMENT_TYPES[deliverable].type}
+          />
+          )
+      // console.log(this.state.course);
+          )}
+        </PickerIOS>
+
+      <TouchableHighlight
         style={styles.headingContainer}
         onPress={this.onCourseSelection.bind(this)}
-        >
-          <Text style={styles.heading}>
-            Course
-          </Text>
-        </TouchableHighlight>
+      >
+        <Text style={styles.heading}>
+          Course
+        </Text>
+      </TouchableHighlight>
 
-        <PickerIOS
+      <PickerIOS
         itemStyle={styles.picker}
-      selectedValue={this.state.course}
-      onValueChange={(course) => this.setState({ course })}
-        >
-      {Object.keys(COURSES).map((course) => (
+        selectedValue={this.state.course}
+        onValueChange={(course) => this.setState({ course })}
+      >
+        {Object.keys(COURSES).map((course) => (
         <PickerItemIOS
-        key={course}
-        value={course}
-        label={COURSES[course].title}
+          key={course}
+          value={course}
+          label={COURSES[course].title}
         />
-      )
-      // console.log(this.state.course);
-    )}
-    </PickerIOS>
-    <View style={styles.headingContainer}>
-    <Text style={styles.heading}>
-    Due Date
-    </Text>
-    </View>
-    <DatePickerIOS
-    minimumDate={this.props.date}
-    style={styles.date}
-    date={this.state.date}
-    mode='date'
-    onResponderRelease={this.saveTheDate.bind(this)}
-    onDateChange={this.onDateChange}
-    />
-    <Text> This course is at {selection} </Text>
-    </View>
-  );
+        )
+      )}
+      </PickerIOS>
+
+    <TouchableHighlight
+    >
+      <View style={styles.headingContainer}>
+        <Text style={styles.heading}
+        onPress={this.setModalVisible.bind(this, true)}>
+          Due:
+        </Text>
+      </View>
+    </TouchableHighlight>
+    <Modal
+    visible={this.state.modalVisible}
+    animationType='slide'
+    transparent={true}
+    >
+    <View style={styles.container}>
+    <View style={{ backgroundColor: 'blue' }}>
+      <DatePickerIOS
+      minimumDate={this.props.date}
+      style={styles.date}
+      date={this.state.date}
+      mode='date'
+      onDateChange={this.onDateChange}
+      />
+      </View>
+      </View>
+    </Modal>
+
+   <Text> This course is at {selection} </Text>
+
+  </View>
+);
 }
 }
 
@@ -209,7 +238,7 @@ const styles = StyleSheet.create({
   },
 
   date: {
-    height: 170,
+    height: 180,
     backgroundColor: 'blue',
     justifyContent: 'center',
     // alignItems: 'center',

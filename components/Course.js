@@ -7,7 +7,7 @@ import {
   TouchableHighlight,
   Modal,
 } from 'react-native';
-
+import ModalDropdown from 'react-native-modal-dropdown';
 // import React, { Component } from 'react';
 // import { Modal, Text, TouchableHighlight, View } from 'react-native';
 class Course extends Component {
@@ -39,6 +39,7 @@ class Course extends Component {
     return (
       <View style={styles.container}>
         <Modal
+
           animationType={"slide"}
           transparent={false}
           visible={this.state.modalVisible}
@@ -47,11 +48,14 @@ class Course extends Component {
          <View style={{marginTop: 22}}>
           <View>
             <Text>Hello World!</Text>
-
+            <ModalDropdown options={['binks', 'shar shar']}>
+            <Text> derp </Text>
+            </ModalDropdown>
             <TouchableHighlight onPress={() => {
               this.setModalVisible(!this.state.modalVisible)
             }}>
               <Text>Hide Modal</Text>
+
             </TouchableHighlight>
 
           </View>
