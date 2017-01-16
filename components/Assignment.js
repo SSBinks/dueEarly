@@ -15,6 +15,7 @@ import {
 // import ModalDropdown from 'react-native-modal-dropdown';
 
 const Course = require('./Course');
+const Dashboard = require('./Dashboard');
 const moment = require('moment');
 //For the picker of classes
 const PickerItemIOS = PickerIOS.Item;
@@ -45,21 +46,27 @@ const COURSES = {
 const ASSIGNMENT_TYPES = {
   termPaper: {
     type: 'term paper',
+    progress: 10
   },
   final: {
     type: 'final',
+    progress: 30
   },
   midterm: {
     type: 'midterm',
+    progress: 20
   },
   exam: {
     type: 'exam',
+    progress: 40
   },
   draft: {
     type: 'draft',
+    progress: 55
   },
   reading: {
     type: 'reading',
+    progress: 90
   }
 };
 
@@ -75,148 +82,162 @@ class Assignment extends Component {
       text: '',
       deliverable: 'termPaper',
       modalVisible: false,
+      progress: 0,
+      complete: false
     };
   }
   onDateChange = (date) => {
     console.log('DAte is a changin');
     this.setState({ date: date });
-
   };
   onCourseSelection() {
     this.props.navigator.push({
       component: Course
     });
   }
-  setTitle() {
-    console.log('hey');
+  goHome() {
+    console.log('this is the text' + this.state.text);
+    this.props.navigator.pop({
+      component: Dashboard
+    })
   }
   setModalVisible(visible, othercrap) {
     console.log('This is the first thing:' + visible);
     console.log('This is the second thing:' + othercrap);
     this.setState({ modalVisible: visible });
   }
-  makeNewAssignment(allThethings) {
-    fetch(' http://localhost:8000/assign', {
+  makeNewAssignment() {
+    console.log('this is the text' + this.state.text);
+    fetch('http://localhost:8000/assign', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-form-urlencoded'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringfy({
-        title: allThethings.title,
-        dueDate: allThethings.date,
-        complete: allThethings.complete,
-        progress: allThethings.progress
+      body: JSON.stringify({
+        title: this.state.text,
+        dueDate: this.state.date,
+        complete: this.state.complete,
+        progress: ASSIGNMENT_TYPES[this.state.deliverable].progress
       })
     });
+    this.goHome();
   }
 
   render() {
     const classes = COURSES[this.state.course];
     const selection = classes.title + ' ' + classes.time;
+    const turnin = ASSIGNMENT_TYPES[this.state.deliverable]
+    this.progress = turnin.progress;
     // console.log(COURSES[this.state.course].title);
     return (
       // This is the input for the assingment
       <View style={styles.container}>
 
-        <View style={styles.headingContainer}>
-          <Text style={styles.heading}>
-            Assignment Name: {this.state.text}
-          </Text>
-        </View>
+      <View style={styles.headingContainer}>
+      <Text style={styles.heading}>
+      Assignment Name: {this.state.text}
+      </Text>
+      </View>
 
-        <View style={styles.input}>
-          <TextInput
-            style={{ textDecorationColor: 'black', fontWeight: 'bold', height: 30, fontSize: 15 }}
-            placeholder='My new assignment'
-            placeholderTextColor='yellow'
-            numberOfLines={2}
-            onChangeText={(text) => this.setState({ text })}
-            value={this.state.text}
-            onEndEditing={this.setTitle.bind(this)}
-          />
-        </View>
+      <View style={styles.input}>
+      <TextInput
+      style={{ textDecorationColor: 'black', fontWeight: 'bold', height: 30, fontSize: 15 }}
+      placeholder='My new assignment'
+      placeholderTextColor='yellow'
+      numberOfLines={2}
+      onChangeText={(text) => this.setState({ text })}
+      value={this.state.text}
+      />
+      </View>
       {/*This is the selector for the type of assignment*/}
-        <View style={styles.headingContainer}>
-          <Text style={styles.heading}>
-            Assignment Type
-          </Text>
-        </View>
-
-        <PickerIOS
-          itemStyle={styles.picker}
-          selectedValue={this.state.deliverable}
-          onValueChange={(deliverable) => this.setState({ deliverable })}
-        >
-          {Object.keys(ASSIGNMENT_TYPES).map((deliverable) => (
-          <PickerItemIOS
-          key={deliverable}
-          value={deliverable}
-          label={ASSIGNMENT_TYPES[deliverable].type}
-          />
-          )
-      // console.log(this.state.course);
-          )}
-        </PickerIOS>
-
-      <TouchableHighlight
-        style={styles.headingContainer}
-        onPress={this.onCourseSelection.bind(this)}
-      >
-        <Text style={styles.heading}>
-          Course
-        </Text>
-      </TouchableHighlight>
+      <View style={styles.headingContainer}>
+      <Text style={styles.heading}>
+      Assignment Type
+      </Text>
+      </View>
 
       <PickerIOS
-        itemStyle={styles.picker}
-        selectedValue={this.state.course}
-        onValueChange={(course) => this.setState({ course })}
+      itemStyle={styles.picker}
+      selectedValue={this.state.deliverable}
+      onValueChange={(deliverable) => this.setState({ deliverable })}
+
       >
-        {Object.keys(COURSES).map((course) => (
+      {Object.keys(ASSIGNMENT_TYPES).map((deliverable) => (
         <PickerItemIOS
-          key={course}
-          value={course}
-          label={COURSES[course].title}
+        key={deliverable}
+        value={deliverable}
+        label={ASSIGNMENT_TYPES[deliverable].type}
         />
-        )
-      )}
-      </PickerIOS>
+      )
+      // console.log(this.state.course);
+    )}
+    </PickerIOS>
 
     <TouchableHighlight
+    style={styles.headingContainer}
+    onPress={this.onCourseSelection.bind(this)}
     >
-      <View style={styles.headingContainer}>
-        <Text style={styles.heading}
-        onPress={this.setModalVisible.bind(this, true)}>
-          Due:
-        </Text>
-      </View>
+    <Text style={styles.heading}>
+    Course
+    </Text>
     </TouchableHighlight>
-    <Modal
-    visible={this.state.modalVisible}
-    animationType='slide'
-    transparent={true}
+
+    <PickerIOS
+    itemStyle={styles.picker}
+    selectedValue={this.state.course}
+    onValueChange={(course) => this.setState({ course })}
     >
-    <View style={[styles.container, { backgroundColor: 'transparent' }]}>
-    <Text> The Date </Text>
-    <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'grey' }]}>
-      <DatePickerIOS
-      minimumDate={this.props.date}
-      style={styles.date}
-      date={this.state.date}
-      mode='date'
-      onDateChange={this.onDateChange}
+    {Object.keys(COURSES).map((course) => (
+      <PickerItemIOS
+      key={course}
+      value={course}
+      label={COURSES[course].title}
       />
-      <Button
-      onPress={this.setModalVisible.bind(this, false)}
-      title='Confirm Date'
-      color='black'
-      />
-      </View>
-      </View>
+    )
+  )}
+  </PickerIOS>
 
-    </Modal>
+  <TouchableHighlight
+  >
+  <View style={styles.headingContainer}>
+  <Text style={styles.heading}
+  onPress={this.setModalVisible.bind(this, true)}>
+  Due:
+  </Text>
+  </View>
+  </TouchableHighlight>
+  <Modal
+  visible={this.state.modalVisible}
+  animationType='slide'
+  transparent={true}
+  >
+  <View style={[styles.container, { backgroundColor: 'transparent' }]}>
+  <Text> The Date </Text>
+  <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'grey' }]}>
+  <DatePickerIOS
+  minimumDate={this.props.date}
+  style={styles.date}
+  date={this.state.date}
+  mode='date'
+  onDateChange={this.onDateChange}
+  />
+  <Button
+  onPress={this.setModalVisible.bind(this, false)}
+  title='Confirm Date'
+  color='black'
+  />
+  </View>
+  </View>
 
-   <Text> This course is at {selection} </Text>
+  </Modal>
+
+  <Text> This course is at {selection} </Text>
+  <Button
+  onPress={this.makeNewAssignment.bind(this)}
+  title='Create Assignment'
+  color='black'
+  />
 
   </View>
 );
