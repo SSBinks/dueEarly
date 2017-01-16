@@ -34,6 +34,14 @@ class Course extends Component {
   setModalVisible(visible) {
     this.setState( { modalVisible: visible } );
   }
+  shariText() {
+    console.log('I found Shari!')
+    return (
+      <View>
+      <Text> Shari Shari </Text>
+      </View>
+    );
+  }
 
   render() {
     return (
@@ -48,8 +56,11 @@ class Course extends Component {
          <View style={{marginTop: 22}}>
           <View>
             <Text>Hello World!</Text>
-            <ModalDropdown options={['binks', 'shar shar']}>
+            <ModalDropdown  options={[  <View style={{ width: 40, height: 40 }}>
+              <Text> Shari Shari </Text>
+              </View>]} >
             <Text> derp </Text>
+
             </ModalDropdown>
             <TouchableHighlight onPress={() => {
               this.setModalVisible(!this.state.modalVisible)

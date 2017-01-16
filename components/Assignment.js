@@ -8,9 +8,11 @@ import {
   PickerIOS,
   DatePickerIOS,
   TouchableHighlight,
+  Modal,
+  Button
 } from 'react-native';
 
-import ModalDropdown from 'react-native-modal-dropdown';
+// import ModalDropdown from 'react-native-modal-dropdown';
 
 const Course = require('./Course');
 const moment = require('moment');
@@ -78,7 +80,7 @@ class Assignment extends Component {
   onDateChange = (date) => {
     console.log('DAte is a changin');
     this.setState({ date: date });
-    this.setState({ modalVisible: false });
+
   };
   onCourseSelection() {
     this.props.navigator.push({
@@ -194,8 +196,9 @@ class Assignment extends Component {
     animationType='slide'
     transparent={true}
     >
-    <View style={styles.container}>
-    <View style={{ backgroundColor: 'blue' }}>
+    <View style={[styles.container, { backgroundColor: 'transparent' }]}>
+    <Text> The Date </Text>
+    <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'grey' }]}>
       <DatePickerIOS
       minimumDate={this.props.date}
       style={styles.date}
@@ -203,8 +206,14 @@ class Assignment extends Component {
       mode='date'
       onDateChange={this.onDateChange}
       />
+      <Button
+      onPress={this.setModalVisible.bind(this, false)}
+      title='Confirm Date'
+      color='black'
+      />
       </View>
       </View>
+
     </Modal>
 
    <Text> This course is at {selection} </Text>
