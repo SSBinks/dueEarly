@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 // import ModalDropdown from 'react-native-modal-dropdown';
-
+const AssignmentType = require('./AssignmentType');
 const Course = require('./Course');
 const Dashboard = require('./Dashboard');
 const moment = require('moment');
@@ -86,6 +86,11 @@ class Assignment extends Component {
       complete: false
     };
   }
+  onAssignType() {
+    this.props.navigator.push({
+      component: AssignmentType
+    });
+  }
   onDateChange = (date) => {
     console.log('DAte is a changin');
     this.setState({ date: date });
@@ -151,11 +156,14 @@ class Assignment extends Component {
       />
       </View>
       {/*This is the selector for the type of assignment*/}
-      <View style={styles.headingContainer}>
+      <TouchableHighlight
+      style={styles.headingContainer}
+      onPress={this.onAssignType.bind(this)}
+      >
       <Text style={styles.heading}>
       Assignment Type
       </Text>
-      </View>
+      </TouchableHighlight>
 
       <PickerIOS
       itemStyle={styles.picker}
