@@ -81,7 +81,8 @@ class Assignment extends Component {
       date: this.props.date,
       text: '',
       deliverable: 'termPaper',
-      modalVisible: false,
+      dateModal: false,
+      typeModal: false,
       progress: 0,
       complete: false
     };
@@ -106,10 +107,13 @@ class Assignment extends Component {
       component: Dashboard
     })
   }
-  setModalVisible(visible, othercrap) {
+  setdateModal(visible, othercrap) {
     console.log('This is the first thing:' + visible);
     console.log('This is the second thing:' + othercrap);
-    this.setState({ modalVisible: visible });
+    this.setState({ dateModal: visible });
+  }
+  setTypeModal(visible, othercrap) {
+    this.setState({ typeModal: visible });
   }
   makeNewAssignment() {
     console.log('this is the text' + this.state.text);
@@ -158,12 +162,23 @@ class Assignment extends Component {
       {/*This is the selector for the type of assignment*/}
       <TouchableHighlight
       style={styles.headingContainer}
-      onPress={this.onAssignType.bind(this)}
+      onPress={this.setTypeModal.bind(this, true)}
       >
       <Text style={styles.heading}>
-      Assignment Type
+      Assignment Type {this.state.deliverable}
       </Text>
       </TouchableHighlight>
+
+      <Modal
+      visible={this.state.typeModal}
+      animationType='slide'
+      transparent={true}
+      >
+      <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
+      <View style={{backgroundColor: 'white', justifyContent: 'center'}}>
+
+      <Text> Assignment Type </Text>
+      <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'white' }]}>
 
       <PickerIOS
       itemStyle={styles.picker}
@@ -181,7 +196,15 @@ class Assignment extends Component {
       // console.log(this.state.course);
     )}
     </PickerIOS>
-
+    <Button
+    onPress={this.setTypeModal.bind(this, false)}
+    title='Choose Assignment'
+    color='black'
+    />
+    </View>
+    </View>
+    </View>
+    </Modal>
     <TouchableHighlight
     style={styles.headingContainer}
     onPress={this.onCourseSelection.bind(this)}
@@ -206,23 +229,27 @@ class Assignment extends Component {
   )}
   </PickerIOS>
 
+
+
   <TouchableHighlight
   >
   <View style={styles.headingContainer}>
   <Text style={styles.heading}
-  onPress={this.setModalVisible.bind(this, true)}>
-  Due:
+  onPress={this.setdateModal.bind(this, true)}>
+  Due: {moment(this.state.date).format('L')}
   </Text>
   </View>
   </TouchableHighlight>
+
   <Modal
-  visible={this.state.modalVisible}
+  visible={this.state.dateModal}
   animationType='slide'
   transparent={true}
   >
-  <View style={[styles.container, { backgroundColor: 'transparent' }]}>
+  <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
+  <View style={{backgroundColor: 'white', justifyContent: 'center'}}>
   <Text> The Date </Text>
-  <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'grey' }]}>
+  <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'white' }]}>
   <DatePickerIOS
   minimumDate={this.props.date}
   style={styles.date}
@@ -231,13 +258,13 @@ class Assignment extends Component {
   onDateChange={this.onDateChange}
   />
   <Button
-  onPress={this.setModalVisible.bind(this, false)}
+  onPress={this.setdateModal.bind(this, false)}
   title='Confirm Date'
   color='black'
   />
   </View>
   </View>
-
+  </View>
   </Modal>
 
   <Text> This course is at {selection} </Text>
