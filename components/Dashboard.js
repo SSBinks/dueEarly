@@ -83,12 +83,15 @@ editAssignment() {
   getCurrentAssignment() {
     console.log("HIIIII");
     const today = moment().format('MM-DD-YYYY');
+    const url = 'http://www.whats-due.com/assign/' + today;
     console.log("Today is " + today);
-    fetch('http://localhost:8000/assign/' + today)
+    console.log( 'this is the url ' + url);
+    fetch(url, {
+
+    })
     .then((response) => response.json())
     .then((responseJson) => {
       this.assignment = responseJson;
-
       console.log( "Let's go to the Assignment!" + this.assignment);
       this.setState({ assignments: this.assignment, dataSource: this.dailyTask.cloneWithRows(this.assignment) });
       return this.assignment;
@@ -212,6 +215,7 @@ const styles = StyleSheet.create({
   head: {
     height: 10,
     left: 10,
+    margin: 2,
   },
   time: {
     fontFamily: 'Chalkboard SE',

@@ -90,6 +90,7 @@ class Assignment extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      warningColor: '#f9f6b8',
       course: 'math',
       date: this.props.date,
       text: '',
@@ -130,7 +131,8 @@ class Assignment extends Component {
   }
   makeNewAssignment() {
     console.log('this is the text' + this.state.text);
-    fetch('http://localhost:8000/assign', {
+    if(this.state.text !== '') {
+    fetch('http://www.whats-due.com/assign/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -140,10 +142,15 @@ class Assignment extends Component {
         title: this.state.text,
         dueDate: this.state.date,
         complete: this.state.complete,
-        progress: ASSIGNMENT_TYPES[this.state.deliverable].progress
+        category: ASSIGNMENT_TYPES[this.state.deliverable].type
+
       })
     });
     this.goHome();
+  }
+  else {
+    this.setState({ warningColor: '#f4cecd' });
+  }
   }
 
   render() {
@@ -160,7 +167,7 @@ class Assignment extends Component {
       <View style={styles.container}>
 
       <View style={styles.headingContainer}>
-      <View style={[styles.input]}>
+      <View style={[styles.input, { backgroundColor: this.state.warningColor }]}>
       <TextInput
       style={styles.textInputDecor}
       placeholder='New Assignment ...'
@@ -230,7 +237,7 @@ class Assignment extends Component {
     <View style={styles.section}>
     <Text style={styles.heading}
     onPress={this.setdateModal.bind(this, true)}>
-    Due: {moment(this.state.date).format('L')}
+    This is due on... {moment(this.state.date).format('L')}
     </Text>
     </View>
     </View>
@@ -354,7 +361,6 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   input: {
-    backgroundColor: '#f9f6b8',
     borderColor: '#f9f6b8',
     borderWidth: 1,
     height: 40,
