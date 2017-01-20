@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 // import ModalDropdown from 'react-native-modal-dropdown';
-const AssignmentType = require('./AssignmentType');
+const AssignmentEdit = require('./AssignmentEdit');
 const Course = require('./Course');
 const Dashboard = require('./Dashboard');
 const moment = require('moment');
@@ -44,29 +44,42 @@ const COURSES = {
   },
 };
 const ASSIGNMENT_TYPES = {
-  termPaper: {
-    type: 'term paper',
-    progress: 10
-  },
-  final: {
-    type: 'final',
-    progress: 30
-  },
-  midterm: {
-    type: 'midterm',
-    progress: 20
-  },
-  exam: {
-    type: 'exam',
-    progress: 40
-  },
-  draft: {
-    type: 'draft',
-    progress: 55
+  default: {
+    type: '',
+    progress: 0
   },
   reading: {
-    type: 'reading',
+    type: 'Reading',
+    progress: 10
+  },
+  draft: {
+    type: 'Draft',
+    progress: 55
+  },
+  termPaper: {
+    type: 'Term Paper',
+    progress: 30
+  },
+
+  midterm: {
+    type: 'Midterm',
+    progress: 20
+  },
+  final: {
+    type: 'Final',
+    progress: 40
+  },
+  exam: {
+    type: 'Exam',
+    progress: 40
+  },
+  presentation: {
+    type: 'Presentation',
     progress: 90
+  },
+  personal: {
+    type: 'Personal Project',
+    progress: 20
   }
 };
 
@@ -80,7 +93,7 @@ class Assignment extends Component {
       course: 'math',
       date: this.props.date,
       text: '',
-      deliverable: 'termPaper',
+      deliverable: 'default',
       dateModal: false,
       typeModal: false,
       progress: 0,
@@ -89,11 +102,11 @@ class Assignment extends Component {
   }
   onAssignType() {
     this.props.navigator.push({
-      component: AssignmentType
+      component: AssignmentEdit
     });
   }
   onDateChange = (date) => {
-    console.log('DAte is a changin');
+    console.log('Date is a changin');
     this.setState({ date: date });
   };
   onCourseSelection() {
@@ -134,6 +147,9 @@ class Assignment extends Component {
   }
 
   render() {
+    var modalBackgroundStyle = {
+      backgroundColor: this.state.typeModal ? 'rgba(0, 0, 0, 0.5)' : 'green',
+    };
     const classes = COURSES[this.state.course];
     const selection = classes.title + ' ' + classes.time;
     const turnin = ASSIGNMENT_TYPES[this.state.deliverable]
@@ -144,42 +160,44 @@ class Assignment extends Component {
       <View style={styles.container}>
 
       <View style={styles.headingContainer}>
-      <Text style={styles.heading}>
-      Assignment Name: {this.state.text}
-      </Text>
-      </View>
-
-      <View style={styles.input}>
+      <View style={[styles.input]}>
       <TextInput
-      style={{ textDecorationColor: 'black', fontWeight: 'bold', height: 30, fontSize: 15 }}
-      placeholder='My new assignment'
-      placeholderTextColor='yellow'
-      numberOfLines={2}
+      style={styles.textInputDecor}
+      placeholder='New Assignment ...'
+      placeholderTextColor='black'
+      numberOfLines={1}
+      placeholderTextColor='grey'
       onChangeText={(text) => this.setState({ text })}
+
       value={this.state.text}
       />
       </View>
+      </View>
+
       {/*This is the selector for the type of assignment*/}
+
       <TouchableHighlight
       style={styles.headingContainer}
       onPress={this.setTypeModal.bind(this, true)}
       >
+      <View style={styles.section}>
       <Text style={styles.heading}>
-      Assignment Type {this.state.deliverable}
+      I am working on a... {ASSIGNMENT_TYPES[this.state.deliverable].type}
       </Text>
+      </View>
       </TouchableHighlight>
+
 
       <Modal
       visible={this.state.typeModal}
       animationType='slide'
       transparent={true}
       >
-      <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
-      <View style={{backgroundColor: 'white', justifyContent: 'center'}}>
-
-      <Text> Assignment Type </Text>
-      <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'white' }]}>
-
+      <View style={[styles.container, { justifyContent: 'center' }, modalBackgroundStyle]}>
+      <View style={{ backgroundColor: 'white', justifyContent: 'center' }}>
+      <View style={{ paddingTop: 5 }}>
+      <Text style={styles.modalHeading}> Assignment Type </Text>
+      </View>
       <PickerIOS
       itemStyle={styles.picker}
       selectedValue={this.state.deliverable}
@@ -203,8 +221,47 @@ class Assignment extends Component {
     />
     </View>
     </View>
+
+    </Modal>
+
+    <TouchableHighlight
+    >
+    <View style={styles.headingContainer}>
+    <View style={styles.section}>
+    <Text style={styles.heading}
+    onPress={this.setdateModal.bind(this, true)}>
+    Due: {moment(this.state.date).format('L')}
+    </Text>
+    </View>
+    </View>
+    </TouchableHighlight>
+
+    <Modal
+    visible={this.state.dateModal}
+    animationType='slide'
+    transparent={true}
+    >
+    <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
+    <View style={{backgroundColor: 'white', justifyContent: 'center'}}>
+    <Text> The Date </Text>
+    <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'white' }]}>
+    <DatePickerIOS
+    minimumDate={this.props.date}
+    style={styles.date}
+    date={this.state.date}
+    mode='date'
+    onDateChange={this.onDateChange}
+    />
+    <Button
+    onPress={this.setdateModal.bind(this, false)}
+    title='Confirm Date'
+    color='black'
+    />
+    </View>
+    </View>
     </View>
     </Modal>
+
     <TouchableHighlight
     style={styles.headingContainer}
     onPress={this.onCourseSelection.bind(this)}
@@ -229,44 +286,6 @@ class Assignment extends Component {
   )}
   </PickerIOS>
 
-
-
-  <TouchableHighlight
-  >
-  <View style={styles.headingContainer}>
-  <Text style={styles.heading}
-  onPress={this.setdateModal.bind(this, true)}>
-  Due: {moment(this.state.date).format('L')}
-  </Text>
-  </View>
-  </TouchableHighlight>
-
-  <Modal
-  visible={this.state.dateModal}
-  animationType='slide'
-  transparent={true}
-  >
-  <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
-  <View style={{backgroundColor: 'white', justifyContent: 'center'}}>
-  <Text> The Date </Text>
-  <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'white' }]}>
-  <DatePickerIOS
-  minimumDate={this.props.date}
-  style={styles.date}
-  date={this.state.date}
-  mode='date'
-  onDateChange={this.onDateChange}
-  />
-  <Button
-  onPress={this.setdateModal.bind(this, false)}
-  title='Confirm Date'
-  color='black'
-  />
-  </View>
-  </View>
-  </View>
-  </Modal>
-
   <Text> This course is at {selection} </Text>
   <Button
   onPress={this.makeNewAssignment.bind(this)}
@@ -281,10 +300,10 @@ class Assignment extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#838487',
+    backgroundColor: '#f9f6b8',
     flex: 1,
     marginTop: 65,
-    padding: 5,
+    padding: 10,
   },
   label: {
     fontSize: 20,
@@ -293,13 +312,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Chalkboard SE',
   },
   picker: {
-    fontSize: 25,
+    fontSize: 30,
     color: 'black',
     fontWeight: 'bold',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 140,
-    backgroundColor: 'blue'
+    height: 150,
+    backgroundColor: 'white'
   },
 
   date: {
@@ -308,19 +327,50 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // alignItems: 'center',
   },
+  textInputDecor: {
+    textDecorationColor: 'black',
+    // fontWeight: 'bold',
+    height: 40,
+    fontSize: 15,
+
+  },
   headingContainer: {
     padding: 4,
-    backgroundColor: '#f6f7f8',
+    borderColor: 'black',
+    height: 60,
+    marginTop: 20
+
   },
   heading: {
-    fontWeight: '500',
-    fontSize: 14,
+    color: 'black',
+    fontSize: 15,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end'
+  },
+  modalHeading: {
+    fontWeight: 'bold',
+    fontSize: 25,
+    fontFamily: 'ChalkboardSE-Bold',
+    textAlign: 'center'
   },
   input: {
-    backgroundColor: '#838487',
-    borderColor: '#000000',
+    backgroundColor: '#f9f6b8',
+    borderColor: '#f9f6b8',
     borderWidth: 1,
-    height: 40
+    height: 40,
+    borderBottomColor: 'grey',
+    borderStyle: 'solid'
+  },
+
+  section: {
+    height: 60,
+    borderStyle: 'dashed',
+    borderWidth: 3,
+    backgroundColor: 'white',
+    borderColor: '#f9f6b8',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
   }
 
 });

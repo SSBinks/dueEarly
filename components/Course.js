@@ -86,7 +86,7 @@ class Course extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#838487',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flex: 1,
     marginTop: 65,
     padding: 5,

@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 const moment = require('moment');
+const AssignmentEdit = require('./AssignmentEdit');
 
 const now = moment().format('dddd MMMM Do YYYY');
 const Assignment = require('./Assignment');
@@ -72,7 +73,13 @@ class Dashboard extends Component {
     this.setState({ modalVisible: visible });
     this.setState({ info: rowData })
   }
-
+editAssignment() {
+  this.props.navigator.push({
+    title: 'Update Me',
+    component: AssignmentEdit,
+    passProps: this.state.info,
+  });
+}
   getCurrentAssignment() {
     console.log("HIIIII");
     const today = moment().format('MM-DD-YYYY');
@@ -137,7 +144,10 @@ class Dashboard extends Component {
             <View
               style={[styles.innerContainer, innerContainerTransparentStyle]}
             >
-            <Text onPress={this.setModalVisible.bind(this, false)}>
+            <Text
+            onPress={this.setModalVisible.bind(this, false)}
+            onLongPress={this.editAssignment.bind(this)}
+            >
             Assignment: {this.state.info.title} {'\n'}
             Completion Date: {moment().format('MM-DD-YYYY')} {'\n'}
             Progress: {this.state.info.progress} {'\n'}
