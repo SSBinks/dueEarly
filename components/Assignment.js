@@ -9,7 +9,8 @@ import {
   DatePickerIOS,
   TouchableHighlight,
   Modal,
-  Button
+  Button,
+  Switch,
 } from 'react-native';
 
 // import ModalDropdown from 'react-native-modal-dropdown';
@@ -19,30 +20,6 @@ const Dashboard = require('./Dashboard');
 const moment = require('moment');
 //For the picker of classes
 const PickerItemIOS = PickerIOS.Item;
-
-//Class objects which will come in as JSOn?
-const COURSES = {
-  math: {
-    title: 'math',
-    time: '9:30'
-  },
-  science: {
-    title: 'science',
-    time: '10:30'
-  },
-  gym: {
-    title: 'gym',
-    time: '1:30'
-  },
-  AA: {
-    title: 'AA',
-    time: '8:30'
-  },
-  english: {
-    title: 'english',
-    time: '2:30'
-  },
-};
 
 const PARTS = {
   default: {
@@ -118,7 +95,11 @@ class Assignment extends Component {
       partModal: false,
       progress: 0,
       complete: false,
-      parts: 'default'
+      parts: 'default',
+      completionAmount: '',
+      weekly: false,
+      daily: false,
+      goal: '',
     };
   }
   onAssignType() {
@@ -292,7 +273,7 @@ class Assignment extends Component {
       label={PARTS[parts].type}
       />
     )
-    // console.log(this.state.course);
+
   )}
   </PickerIOS>
   <Button
@@ -305,46 +286,96 @@ class Assignment extends Component {
 
   </Modal>
 
+  <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around' }}>
+  <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
+  <TextInput
+  style={[styles.textInputDecor, { textAlign: 'center' }, {justifyContent: 'flex-end'}]}
+  placeholder='Starting Point...'
+  placeholderTextColor='black'
+  numberOfLines={1}
+  keyboardType='numeric'
+  placeholderTextColor='grey'
+  onChangeText={(completionAmount) => this.setState({ completionAmount })}
+  value={this.state.completionAmount}
+  />
+  </View>
+  <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
+  <TextInput
+  style={[styles.textInputDecor, { textAlign: 'center' }, {justifyContent: 'flex-end'}]}
+  placeholder='End Goal...'
+  placeholderTextColor='black'
+  keyboardType='numeric'
+  numberOfLines={1}
+  placeholderTextColor='grey'
+  onChangeText={( goal) => this.setState({ goal })}
+  value={this.state.goal}
+  />
+  </View>
+  </View>
 
-    <TouchableHighlight
-    >
-    <View style={styles.headingContainer}>
-    <View style={styles.section}>
-    <Text style={styles.heading}
-    onPress={this.setdateModal.bind(this, true)}>
-    This is due on... {moment(this.state.date).format('L')}
-    </Text>
-    </View>
-    </View>
-    </TouchableHighlight>
+  {/* These are the switches*/}
+  <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around' }}>
+  <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
+  <Text>Daily Notifications
+  <Switch
+  onTintColor='white'
+  onValueChange={(value) => this.setState({ daily: value })}
+  style={{ marginTop: 10 }}
+  value={this.state.daily}
+  />
+  </Text>
+  </View>
+  <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
+  <Text>Weekly Notifications
+  <Switch
+  onTintColor='white'
+  onValueChange={(value) => this.setState({ weekly: value })}
+  style={{ marginTop: 10 }}
+  value={this.state.weekly}
+  />
+  </Text>
+  </View>
+  </View>
 
-    <Modal
-    visible={this.state.dateModal}
-    animationType='slide'
-    transparent={true}
-    >
-    <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
-    <View style={{backgroundColor: 'white', justifyContent: 'center'}}>
-    <Text> The Date </Text>
-    <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'white' }]}>
-    <DatePickerIOS
-    minimumDate={this.props.date}
-    style={styles.date}
-    date={this.state.date}
-    mode='date'
-    onDateChange={this.onDateChange}
-    />
-    <Button
-    onPress={this.setdateModal.bind(this, false)}
-    title='Confirm Date'
-    color='black'
-    />
-    </View>
-    </View>
-    </View>
-    </Modal>
+  {/* This is the beginning of the date stuff*/}
+  <TouchableHighlight
+  >
+  <View style={styles.headingContainer}>
+  <View style={styles.section}>
+  <Text style={styles.heading}
+  onPress={this.setdateModal.bind(this, true)}>
+  This is due on... {moment(this.state.date).format('L')}
+  </Text>
+  </View>
+  </View>
+  </TouchableHighlight>
 
-    
+  <Modal
+  visible={this.state.dateModal}
+  animationType='slide'
+  transparent={true}
+  >
+  <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
+  <View style={{ backgroundColor: 'white', justifyContent: 'center'}}>
+  <Text> The Date </Text>
+  <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'white' }]}>
+  <DatePickerIOS
+  minimumDate={this.props.date}
+  style={styles.date}
+  date={this.state.date}
+  mode='date'
+  onDateChange={this.onDateChange}
+  />
+  <Button
+  onPress={this.setdateModal.bind(this, false)}
+  title='Confirm Date'
+  color='black'
+  />
+  </View>
+  </View>
+  </View>
+  </Modal>
+
   <Button
   onPress={this.makeNewAssignment.bind(this)}
   title='Create Assignment'
