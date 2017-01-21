@@ -43,6 +43,24 @@ const COURSES = {
     time: '2:30'
   },
 };
+
+const PARTS = {
+  default: {
+    type: ''
+  },
+  page: {
+    type: 'page'
+  },
+  chapter: {
+    type: 'chapter'
+  },
+  section: {
+    type: 'section'
+  },
+  problemSet: {
+    type: 'problem set'
+  }
+};
 const ASSIGNMENT_TYPES = {
   default: {
     type: '',
@@ -97,8 +115,10 @@ class Assignment extends Component {
       deliverable: 'default',
       dateModal: false,
       typeModal: false,
+      partModal: false,
       progress: 0,
-      complete: false
+      complete: false,
+      parts: 'default'
     };
   }
   onAssignType() {
@@ -129,28 +149,32 @@ class Assignment extends Component {
   setTypeModal(visible, othercrap) {
     this.setState({ typeModal: visible });
   }
+  setPartModal(visible) {
+    this.setState({ partModal: visible });
+  }
   makeNewAssignment() {
     console.log('this is the text' + this.state.text);
     if(this.state.text !== '') {
-    fetch('http://www.whats-due.com/assign/', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: this.state.text,
-        dueDate: this.state.date,
-        complete: this.state.complete,
-        category: ASSIGNMENT_TYPES[this.state.deliverable].type
+      fetch('http://www.whats-due.com/assign/', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: this.state.text,
+          dueDate: this.state.date,
+          complete: this.state.complete,
+          category: ASSIGNMENT_TYPES[this.state.deliverable].type,
+          part: PART[this.state.parts].type
 
-      })
-    });
-    this.goHome();
-  }
-  else {
-    this.setState({ warningColor: '#f4cecd' });
-  }
+        })
+      });
+      this.goHome();
+    }
+    else {
+      this.setState({ warningColor: '#f4cecd' });
+    }
   }
 
   render() {
@@ -231,6 +255,57 @@ class Assignment extends Component {
 
     </Modal>
 
+    {/* This is where the parts are selected*/}
+
+    <TouchableHighlight
+    style={styles.headingContainer}
+    onPress={this.setPartModal.bind(this, true)}
+    >
+    <View style={styles.section}>
+    <Text style={styles.heading}>
+    I need to divide this by... {PARTS[this.state.parts].type}
+    </Text>
+    </View>
+    </TouchableHighlight>
+
+
+    <Modal
+    visible={this.state.partModal}
+    animationType='slide'
+    transparent={true}
+    >
+    <View style={[styles.container, { justifyContent: 'center' }, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
+    <View style={{ backgroundColor: 'white', justifyContent: 'center' }}>
+    <View style={{ paddingTop: 5 }}>
+    <Text style={styles.modalHeading}> Section Type </Text>
+    </View>
+    <PickerIOS
+    itemStyle={styles.picker}
+    selectedValue={this.state.parts}
+    onValueChange={(parts) => this.setState({ parts })}
+
+    >
+    {Object.keys(PARTS).map((parts) => (
+      <PickerItemIOS
+      key={parts}
+      value={parts}
+      label={PARTS[parts].type}
+      />
+    )
+    // console.log(this.state.course);
+  )}
+  </PickerIOS>
+  <Button
+  onPress={this.setPartModal.bind(this, false)}
+  title='Confirm Part'
+  color='black'
+  />
+  </View>
+  </View>
+
+  </Modal>
+
+
     <TouchableHighlight
     >
     <View style={styles.headingContainer}>
@@ -269,31 +344,7 @@ class Assignment extends Component {
     </View>
     </Modal>
 
-    <TouchableHighlight
-    style={styles.headingContainer}
-    onPress={this.onCourseSelection.bind(this)}
-    >
-    <Text style={styles.heading}>
-    Course
-    </Text>
-    </TouchableHighlight>
-
-    <PickerIOS
-    itemStyle={styles.picker}
-    selectedValue={this.state.course}
-    onValueChange={(course) => this.setState({ course })}
-    >
-    {Object.keys(COURSES).map((course) => (
-      <PickerItemIOS
-      key={course}
-      value={course}
-      label={COURSES[course].title}
-      />
-    )
-  )}
-  </PickerIOS>
-
-  <Text> This course is at {selection} </Text>
+    
   <Button
   onPress={this.makeNewAssignment.bind(this)}
   title='Create Assignment'
