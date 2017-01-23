@@ -26,16 +26,16 @@ const PARTS = {
     type: ''
   },
   page: {
-    type: 'page'
+    type: 'Page'
   },
   chapter: {
-    type: 'chapter'
+    type: 'Chapter'
   },
   section: {
-    type: 'section'
+    type: 'Section'
   },
   problemSet: {
-    type: 'problem set'
+    type: 'Problem set'
   }
 };
 const ASSIGNMENT_TYPES = {
@@ -100,6 +100,7 @@ class Assignment extends Component {
       weekly: false,
       daily: false,
       goal: '',
+      dailyGoal: 0
     };
   }
   onAssignType() {
@@ -116,16 +117,34 @@ class Assignment extends Component {
       component: Course
     });
   }
+  //Set the Progress
+  onSetProgress () {
+    const num = parseInt(this.state.completionAmount) / parseInt(this.state.goal);
+    console.log('In the onSetProgress this is num' + num);
+    const percent = num * 100;
+      console.log('In the onSetProgress this is percent' + percent);
+    this.setState({ progress: percent });
+      console.log('In the onSetProgress this is progress' + this.state.progress);
+  }
+
+  onSetDailyGoals() {
+    const today = moment();
+    const dayDiff = moment(this.state.date).diff(today, 'days');
+    const goal = parseInt(this.state.goal) / parseInt(dayDiff);
+    this.setState({ dailyGoal: goal });
+  }
   goHome() {
     console.log('this is the text' + this.state.text);
     this.props.navigator.pop({
       component: Dashboard
     })
   }
+  //Modal setting!
   setdateModal(visible, othercrap) {
     console.log('This is the first thing:' + visible);
     console.log('This is the second thing:' + othercrap);
     this.setState({ dateModal: visible });
+    this.onSetDailyGoals();
   }
   setTypeModal(visible, othercrap) {
     this.setState({ typeModal: visible });
@@ -160,10 +179,10 @@ class Assignment extends Component {
 
   render() {
     var modalBackgroundStyle = {
-      backgroundColor: this.state.typeModal ? 'rgba(0, 0, 0, 0.5)' : 'green',
+      backgroundColor: this.state.typeModal ? 'rgba(0, 0, 0, 0.5)' : 'white',
     };
-
-
+   console.log('this is in the progress' + this.state.progress);
+    console.log('this is in the daily Goal' + this.state.dailyGoal);
     const turnin = ASSIGNMENT_TYPES[this.state.deliverable]
     this.progress = turnin.progress;
     // console.log(COURSES[this.state.course].title);
@@ -206,8 +225,8 @@ class Assignment extends Component {
       transparent={true}
       >
       <View style={[styles.container, { justifyContent: 'center' }, modalBackgroundStyle]}>
-      <View style={{ backgroundColor: 'white', justifyContent: 'center' }}>
-      <View style={{ paddingTop: 5 }}>
+      <View style={{ backgroundColor: 'white'  }}>
+      <View style={{ paddingTop: 5,}}>
       <Text style={styles.modalHeading}> Assignment Type </Text>
       </View>
       <PickerIOS
@@ -226,12 +245,13 @@ class Assignment extends Component {
       // console.log(this.state.course);
     )}
     </PickerIOS>
-
+    <View style={styles.button}>
     <Button
     onPress={this.setTypeModal.bind(this, false)}
     title='Choose Assignment'
     color='black'
     />
+    </View>
     </View>
     </View>
 
@@ -277,11 +297,13 @@ class Assignment extends Component {
 
   )}
   </PickerIOS>
+  <View style={styles.button}>
   <Button
   onPress={this.setPartModal.bind(this, false)}
   title='Confirm Part'
   color='black'
   />
+  </View>
   </View>
   </View>
 
@@ -294,7 +316,6 @@ class Assignment extends Component {
   placeholder='Starting Point...'
   placeholderTextColor='black'
   numberOfLines={1}
-  keyboardType='numeric'
   placeholderTextColor='grey'
   onChangeText={(completionAmount) => this.setState({ completionAmount })}
   value={this.state.completionAmount}
@@ -305,11 +326,13 @@ class Assignment extends Component {
   style={[styles.textInputDecor, { textAlign: 'center' }, {justifyContent: 'flex-end'}]}
   placeholder='End Goal...'
   placeholderTextColor='black'
-  keyboardType='numeric'
+  returnKeyType='done'
   numberOfLines={1}
   placeholderTextColor='grey'
-  onChangeText={( goal) => this.setState({ goal })}
+  onChangeText={(goal) => this.setState({ goal })}
   value={this.state.goal}
+  onEndEditing={this.onSetProgress.bind(this)}
+  onSubmitEditing={this.onSetProgress.bind(this)}
   />
   </View>
   </View>
@@ -358,8 +381,8 @@ class Assignment extends Component {
   >
   <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
   <View style={{ backgroundColor: 'white', justifyContent: 'center'}}>
-  <Text> The Date </Text>
-  <View style={[{ backgroundColor: 'blue' }, { backgroundColor: 'white' }]}>
+  <Text style={styles.modalHeading}> The Date </Text>
+  <View style={{padding: 5}}>
   <DatePickerIOS
   minimumDate={this.props.date}
   style={styles.date}
@@ -367,6 +390,7 @@ class Assignment extends Component {
   mode='date'
   onDateChange={this.onDateChange}
   />
+  <View style={styles.button}>
   <Button
   onPress={this.setdateModal.bind(this, false)}
   title='Confirm Date'
@@ -375,8 +399,9 @@ class Assignment extends Component {
   </View>
   </View>
   </View>
+  </View>
   </Modal>
-  <View style={{ marginTop: 10 }}>
+  <View style={{ margin: 30, justifyContent: 'flex-end', backgroundColor: '#f9f6b8' }}>
   <Button
   onPress={this.makeNewAssignment.bind(this)}
   title='Create Assignment'
@@ -402,24 +427,24 @@ const styles = StyleSheet.create({
     fontFamily: 'Chalkboard SE',
   },
   picker: {
-    fontSize: 30,
+    fontSize: 25,
     color: 'black',
     fontWeight: 'bold',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 150,
+    height: 180,
     backgroundColor: 'white'
   },
 
   date: {
     height: 180,
-    backgroundColor: 'blue',
+    backgroundColor: 'white',
     justifyContent: 'center',
     // alignItems: 'center',
   },
   textInputDecor: {
     textDecorationColor: 'black',
-    // fontWeight: 'bold',
+    fontWeight: 'bold',
     height: 40,
     fontSize: 15,
 
@@ -438,10 +463,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   modalHeading: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     fontSize: 25,
-    fontFamily: 'ChalkboardSE-Bold',
-    textAlign: 'center'
+    textAlign: 'center',
+
   },
   input: {
     borderColor: '#f9f6b8',
@@ -450,6 +475,12 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
     borderStyle: 'solid'
   },
+  button: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1,
+    backgroundColor: '#f9f6b8'
+  },
+
 
   section: {
     height: 60,
