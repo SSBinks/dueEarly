@@ -147,7 +147,7 @@ class Assignment extends Component {
           dueDate: this.state.date,
           complete: this.state.complete,
           category: ASSIGNMENT_TYPES[this.state.deliverable].type,
-          part: PART[this.state.parts].type
+          part: PARTS[this.state.parts].type
 
         })
       });
@@ -162,8 +162,8 @@ class Assignment extends Component {
     var modalBackgroundStyle = {
       backgroundColor: this.state.typeModal ? 'rgba(0, 0, 0, 0.5)' : 'green',
     };
-    const classes = COURSES[this.state.course];
-    const selection = classes.title + ' ' + classes.time;
+
+
     const turnin = ASSIGNMENT_TYPES[this.state.deliverable]
     this.progress = turnin.progress;
     // console.log(COURSES[this.state.course].title);
@@ -226,6 +226,7 @@ class Assignment extends Component {
       // console.log(this.state.course);
     )}
     </PickerIOS>
+
     <Button
     onPress={this.setTypeModal.bind(this, false)}
     title='Choose Assignment'
@@ -283,9 +284,9 @@ class Assignment extends Component {
   />
   </View>
   </View>
-
   </Modal>
 
+{/* This is where the input start and endpoint live*/}
   <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around' }}>
   <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
   <TextInput
@@ -314,7 +315,7 @@ class Assignment extends Component {
   </View>
 
   {/* These are the switches*/}
-  <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around' }}>
+  <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around', marginBottom: 10 }}>
   <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
   <Text>Daily Notifications
   <Switch
@@ -375,13 +376,13 @@ class Assignment extends Component {
   </View>
   </View>
   </Modal>
-
+  <View style={{ marginTop: 10 }}>
   <Button
   onPress={this.makeNewAssignment.bind(this)}
   title='Create Assignment'
   color='black'
   />
-
+</View>
   </View>
 );
 }
