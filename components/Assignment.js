@@ -130,7 +130,7 @@ class Assignment extends Component {
   onSetDailyGoals() {
     const today = moment();
     const dayDiff = moment(this.state.date).diff(today, 'days');
-    const goal = parseInt(this.state.goal) / parseInt(dayDiff);
+    const goal =(parseInt(this.state.goal) - parseInt(this.state.completionAmount))/ parseInt(dayDiff);
     this.setState({ dailyGoal: goal });
   }
   goHome() {
@@ -166,8 +166,10 @@ class Assignment extends Component {
           dueDate: moment(this.state.date).format('L'),
           complete: this.state.complete,
           category: ASSIGNMENT_TYPES[this.state.deliverable].type,
-          part: PARTS[this.state.parts].type
-
+          part: PARTS[this.state.parts].type,
+          completionAmount: this.state.completionAmount,
+          goal: this.state.goal,
+          dailyGoal: this.state.dailyGoal
         })
       });
       this.goHome();
@@ -317,6 +319,7 @@ class Assignment extends Component {
   placeholderTextColor='black'
   numberOfLines={1}
   placeholderTextColor='grey'
+  onEndEditing={this.onSetProgress.bind(this)}
   onChangeText={(completionAmount) => this.setState({ completionAmount })}
   value={this.state.completionAmount}
   />
