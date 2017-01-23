@@ -76,13 +76,13 @@ class Dashboard extends Component {
     this.setState({ info: rowData })
   }
 
-editAssignment() {
-  this.props.navigator.push({
-    title: 'Update Me',
-    component: AssignmentEdit,
-    passProps: this.state.info,
-  });
-}
+  editAssignment() {
+    this.props.navigator.push({
+      title: 'Update Me',
+      component: AssignmentEdit,
+      passProps: this.state.info,
+    });
+  }
   getCurrentAssignment() {
     console.log("HIIIII");
     const today = moment().format('MM-DD-YYYY');
@@ -152,25 +152,25 @@ editAssignment() {
       // source={Pic}
       style={styles.container}
       >
-        <Modal
-          transparent={this.state.transparent}
-          visible={this.state.modalVisible}
-        >
-          <View style={[styles.container, modalBackgroundStyle]}>
-            <View
-              style={[styles.innerContainer, innerContainerTransparentStyle]}
-            >
-            <Text
-            onPress={this.setModalVisible.bind(this, false)}
-            onLongPress={this.editAssignment.bind(this)}
-            >
-            Assignment: {this.state.info.title} {'\n'}
-            Completion Date: {moment().format('MM-DD-YYYY')} {'\n'}
-            Progress: {this.state.info.progress} {'\n'}
-            </Text>
-            </View>
-          </View>
-        </Modal>
+      <Modal
+      transparent={this.state.transparent}
+      visible={this.state.modalVisible}
+      >
+      <View style={[styles.container, modalBackgroundStyle]}>
+      <View
+      style={[styles.innerContainer, innerContainerTransparentStyle]}
+      >
+      <Text
+      onPress={this.setModalVisible.bind(this, false)}
+      onLongPress={this.editAssignment.bind(this)}
+      >
+      Assignment: {this.state.info.title} {'\n'}
+      Completion Date: {moment().format('MM-DD-YYYY')} {'\n'}
+      Progress: {this.state.info.progress} {'\n'}
+      </Text>
+      </View>
+      </View>
+      </Modal>
 
       <View
       style={styles.topMenu}
@@ -185,22 +185,25 @@ editAssignment() {
       <Text style={styles.menu} > + </Text>
       </TouchableHighlight>
       </View>
-
       <View
       style={styles.head}
       >
+
       <Text
       style={styles.time}
       >
       Today: {now}
       </Text>
       </View>
+      <View style={{ justifyContent: 'flex-start'}}>
       <ListView
+      style={{  marginTop: 1, paddingTop: 1}}
       enableEmptySections={true}
-      style={{ height: 500 }}
+      automaticallyAdjustContentInsets={false}
       dataSource={this.state.dataSource}
       renderRow={this.renderRow.bind(this)}
       />
+      </View>
       </View>
     );
   }
@@ -213,7 +216,7 @@ const styles = StyleSheet.create({
     padding: 10,
     // height: null,
     // width: null,
-  backgroundColor: 'white'
+    backgroundColor: 'white'
   },
   titles: {
     fontSize: 20,
@@ -226,9 +229,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   head: {
-    height: 10,
-    left: 10,
-    margin: 2,
+
+    padding: 20,
+  
   },
   time: {
     fontFamily: 'Chalkboard SE',
@@ -248,7 +251,7 @@ const styles = StyleSheet.create({
   },
   textContainter: {
     flex: 1,
-    padding: 15,
+    padding: 3,
     backgroundColor: '#caf9db',
     height: 70,
     borderRadius: 25,
