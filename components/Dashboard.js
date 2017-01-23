@@ -8,7 +8,7 @@ import {
   ListView,
   TouchableHighlight,
   Modal,
-  Image
+
 
 } from 'react-native';
 
@@ -40,6 +40,7 @@ class Dashboard extends Component {
     };
   }
 
+
   onAddPressed() {
     this.props.navigator.push({
       title: 'Schedule An Assignment',
@@ -55,6 +56,7 @@ class Dashboard extends Component {
     });
     console.log('You are trying to see some classes');
   }
+
 
   onInProgressPressed() {
     console.log('You want to see what is in Progress yay!' + this.assignment);
@@ -73,6 +75,7 @@ class Dashboard extends Component {
     this.setState({ modalVisible: visible });
     this.setState({ info: rowData })
   }
+
 editAssignment() {
   this.props.navigator.push({
     title: 'Update Me',
@@ -100,7 +103,16 @@ editAssignment() {
       console.error("You don't want zero problems big fella" + error);
     });
   }
-
+  _onLocalNotification(notification) {
+    AlertIOS.alert(
+      'Local Notification Received',
+      'Alert message: ' + notification.getMessage(),
+      [{
+        text: 'Dismiss',
+        onPress: null,
+      }]
+    );
+  }
 
   renderRow(rowData) {
     return (
@@ -134,6 +146,7 @@ editAssignment() {
     : null;
     console.log('I am getting to the render!');
     console.log('this is the assignment' + this.state.info.title);
+    // this.makePopUp();
     return (
       <View
       // source={Pic}

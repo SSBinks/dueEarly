@@ -108,7 +108,7 @@ class Assignment extends Component {
     });
   }
   onDateChange = (date) => {
-    console.log('Date is a changin');
+    console.log('Date is a changin' + date);
     this.setState({ date: date });
   };
   onCourseSelection() {
@@ -144,7 +144,7 @@ class Assignment extends Component {
         },
         body: JSON.stringify({
           title: this.state.text,
-          dueDate: this.state.date,
+          dueDate: moment(this.state.date).format('L'),
           complete: this.state.complete,
           category: ASSIGNMENT_TYPES[this.state.deliverable].type,
           part: PARTS[this.state.parts].type
@@ -284,9 +284,9 @@ class Assignment extends Component {
   />
   </View>
   </View>
-  </Modal>
 
-{/* This is where the input start and endpoint live*/}
+  </Modal>
+{/* This is where the input start and endput*/}
   <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around' }}>
   <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
   <TextInput
