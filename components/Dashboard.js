@@ -8,7 +8,7 @@ import {
   ListView,
   TouchableHighlight,
   Modal,
-
+Slider
 
 } from 'react-native';
 
@@ -168,6 +168,15 @@ class Dashboard extends Component {
       Completion Date: {moment().format('MM-DD-YYYY')} {'\n'}
       Progress: {this.state.info.progress} {'\n'}
       </Text>
+      <View>
+      <Slider
+      {...this.props}
+      onValueChange={(value) => this.setState({ completionAmount: value })}
+      step={this.state.info.completionAmount}
+      minimumValue={0}
+      maximumValue={this.state.info.goal}
+      />
+      </View>
       </View>
       </View>
       </Modal>
@@ -231,7 +240,7 @@ const styles = StyleSheet.create({
   head: {
 
     padding: 20,
-  
+
   },
   time: {
     fontFamily: 'Chalkboard SE',

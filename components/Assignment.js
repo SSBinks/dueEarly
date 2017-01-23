@@ -122,16 +122,25 @@ class Assignment extends Component {
     const num = parseInt(this.state.completionAmount) / parseInt(this.state.goal);
     console.log('In the onSetProgress this is num' + num);
     const percent = num * 100;
-      console.log('In the onSetProgress this is percent' + percent);
+    console.log('In the onSetProgress this is percent' + percent);
     this.setState({ progress: percent });
-      console.log('In the onSetProgress this is progress' + this.state.progress);
+    console.log('In the onSetProgress this is progress' + this.state.progress);
   }
 
   onSetDailyGoals() {
     const today = moment();
     const dayDiff = moment(this.state.date).diff(today, 'days');
-    const goal =(parseInt(this.state.goal) - parseInt(this.state.completionAmount))/ parseInt(dayDiff);
-    this.setState({ dailyGoal: goal });
+    if(dayDiff !== 0 ) {
+      const goal =(parseInt(this.state.goal) - parseInt(this.state.completionAmount))/ parseInt(dayDiff);
+      this.setState({ dailyGoal: goal });
+    }
+    else if(this.state.goal !== '') {
+      const goals = parseInt(this.state.goal);
+      this.setState({ dailyGoal: goals });
+    }
+    else {
+      this.setState({ dailyGoal: 0});
+    }
   }
   goHome() {
     console.log('this is the text' + this.state.text);
@@ -153,8 +162,8 @@ class Assignment extends Component {
     this.setState({ partModal: visible });
   }
   makeNewAssignment() {
-    console.log('this is the text' + this.state.text);
-    if(this.state.text !== '') {
+    console.log('MAKING A NEW ASSIGNMENT !!!' + this.state.text);
+    if (this.state.text !== '') {
       fetch('http://www.whats-due.com/assign/', {
         method: 'POST',
         headers: {
@@ -165,13 +174,17 @@ class Assignment extends Component {
           title: this.state.text,
           dueDate: moment(this.state.date).format('L'),
           complete: this.state.complete,
-          category: ASSIGNMENT_TYPES[this.state.deliverable].type,
+          categories: ASSIGNMENT_TYPES[this.state.deliverable].type,
           part: PARTS[this.state.parts].type,
           completionAmount: this.state.completionAmount,
           goal: this.state.goal,
           dailyGoal: this.state.dailyGoal
         })
+
+      }).catch((error) => {
+        console.error("You don't want zero problems big fella" + error);
       });
+
       this.goHome();
     }
     else {
@@ -183,7 +196,7 @@ class Assignment extends Component {
     var modalBackgroundStyle = {
       backgroundColor: this.state.typeModal ? 'rgba(0, 0, 0, 0.5)' : 'white',
     };
-   console.log('this is in the progress' + this.state.progress);
+    console.log('this is in the progress' + this.state.progress);
     console.log('this is in the daily Goal' + this.state.dailyGoal);
     const turnin = ASSIGNMENT_TYPES[this.state.deliverable]
     this.progress = turnin.progress;
@@ -310,7 +323,7 @@ class Assignment extends Component {
   </View>
 
   </Modal>
-{/* This is where the input start and endput*/}
+  {/* This is where the input start and endput*/}
   <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around' }}>
   <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
   <TextInput
@@ -410,7 +423,7 @@ class Assignment extends Component {
   title='Create Assignment'
   color='black'
   />
-</View>
+  </View>
   </View>
 );
 }
