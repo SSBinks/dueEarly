@@ -10,14 +10,18 @@ import {
   TouchableHighlight,
   Modal,
   AlertIOS,
+  Slider,
   Button,
   PushNotificationIOS
 } from 'react-native';
 
 class AssignmentEdit extends Component {
   constructor(props) {
-    super(props)
-
+    super(props);
+    value: 0;
+    this.state = {
+    value:  this.props.value
+    }
   }
   _sendNotification() {
     require('RCTDeviceEventEmitter').emit('remoteNotificationReceived', {
@@ -103,7 +107,16 @@ class AssignmentEdit extends Component {
 
   render() {
     return (
+
       <View style={styles.container}>
+      <View>
+        <Text style={styles.text} >
+          {this.state.value && +this.state.value.toFixed(3)}
+        </Text>
+        <Slider
+          maximumValue={10}
+          onValueChange={(value) => this.setState({value: value})} />
+      </View>
       <Button
          onPress={this._sendNotification}
          label="Send fake notification"

@@ -36,7 +36,7 @@ class Dashboard extends Component {
       active: false,
       modalVisible: false,
       transparent: false,
-      info: this.information
+      info: this.information,
     };
   }
 
@@ -73,15 +73,43 @@ class Dashboard extends Component {
     console.log('hopefully this is rowData' + other);
     this.setState({ transparent: !this.state.transparent });
     this.setState({ modalVisible: visible });
-    this.setState({ info: rowData })
+    this.setState({ info: rowData });
+    this.appendAssignment();
   }
-
+appendAssignment() {
+  console.log('This is the id' + this.state.info._id);
+  console.log('I am getting here!');
+  const id = this.state.info._id;
+  fetch('http://www.whats-due.com/assign/update/' + id, {
+  method: 'PUT',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    title: this.state.info.text,
+    dueDate: this.state.info.date,
+    complete: this.state.info.complete,
+    categories: this.state.info.deliverable,
+    part: this.state.info.parts,
+    completionAmount: this.state.info.completionAmount,
+    goal: this.state.info.goal,
+    dailyGoal: this.state.info.dailyGoal
+  })
+});
+}
   editAssignment() {
     this.props.navigator.push({
       title: 'Update Me',
       component: AssignmentEdit,
       passProps: this.state.info,
     });
+  }
+  changeSlider(){
+    const obj = this.state.info;
+    obj.completionAmount = value;
+    this.setState(info: obj);
+
   }
   getCurrentAssignment() {
     console.log("HIIIII");
@@ -145,7 +173,7 @@ class Dashboard extends Component {
     ? { backgroundColor: '#f9f6b8', padding: 20 }
     : null;
     console.log('I am getting to the render!');
-    console.log('this is the assignment' + this.state.info.title);
+    console.log('this is the assignment' + this.state.info.completionAmount);
     // this.makePopUp();
     return (
       <View
@@ -156,7 +184,7 @@ class Dashboard extends Component {
       transparent={this.state.transparent}
       visible={this.state.modalVisible}
       >
-      <View style={[styles.container, modalBackgroundStyle]}>
+      <View style={[styles.container, { justifyContent: 'center' }, modalBackgroundStyle]}>
       <View
       style={[styles.innerContainer, innerContainerTransparentStyle]}
       >
@@ -164,17 +192,23 @@ class Dashboard extends Component {
       onPress={this.setModalVisible.bind(this, false)}
       onLongPress={this.editAssignment.bind(this)}
       >
-      Assignment: {this.state.info.title} {'\n'}
-      Completion Date: {moment().format('MM-DD-YYYY')} {'\n'}
+      {this.state.info.title} {'\n'}
+      This is Due: {moment().format('l')} {'\n'}
       Progress: {this.state.info.progress} {'\n'}
       </Text>
-      <View>
+        <Text>Currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)} </Text>
+      <View style={{alignItems: 'stretch', justifyContent: 'center'}}>
+
       <Slider
-      {...this.props}
-      onValueChange={(value) => this.setState({ completionAmount: value })}
-      step={this.state.info.completionAmount}
-      minimumValue={0}
-      maximumValue={this.state.info.goal}
+      style={{ height: 50, width: 250 }}
+      minimumTrackTintColor={'white'}
+      value={parseInt(this.state.info.completionAmount)}
+      onValueChange={(value) => {
+        const obj = this.state.info;
+        obj.completionAmount = value;
+        this.setState({ info: obj });
+      }}
+      maximumValue={ parseInt(this.state.info.goal) }
       />
       </View>
       </View>
@@ -235,7 +269,8 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     borderRadius: 10,
-    alignItems: 'center'
+    alignItems: 'center',
+
   },
   head: {
 
