@@ -30,6 +30,7 @@ class Dashboard extends Component {
     this.dailyTask = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     console.log("Re-check the assignment" + this.assignment);
     this.information = {};
+
     this.state = {
       assignments: this.assignment,
       dataSource: this.dailyTask.cloneWithRows(this.assignment),
@@ -40,7 +41,6 @@ class Dashboard extends Component {
       statusColor: '#f9f6b8'
     };
   }
-
 
   onAddPressed() {
     this.props.navigator.push({
@@ -58,6 +58,13 @@ class Dashboard extends Component {
     console.log('You are trying to see some classes');
   }
 
+
+  componentWillReceiveProps() {
+    this.getCurrentAssignment();
+  }
+  // componentDidUpdate(prevProps) {
+  //     // console.log('should compoennet update happennin' + preProps);
+  //   }
 
   onInProgressPressed() {
     console.log('You want to see what is in Progress yay!' + this.assignment);
@@ -121,6 +128,7 @@ class Dashboard extends Component {
     });
   }
 
+
   getCurrentAssignment() {
     console.log("HIIIII");
     const today = moment().format('MM-DD-YYYY');
@@ -141,6 +149,8 @@ class Dashboard extends Component {
       console.error("You don't want zero problems big fella" + error);
     });
   }
+
+
   _onLocalNotification(notification) {
     AlertIOS.alert(
       'Local Notification Received',
@@ -156,7 +166,7 @@ class Dashboard extends Component {
 
 
     return (
-    <View>
+      <View>
       <TouchableHighlight
       underlayColor='#dddddd'
       // onHideUnderlay={this._onUnhighlight}
@@ -197,6 +207,7 @@ class Dashboard extends Component {
     // ? { backgroundColor: '#f9f6b8', padding: 20 }
     // : null;
     console.log('I am getting to the render!');
+    // this.shouldComponentUpdate();
     console.log('this is the assignment' + this.state.info.completionAmount);
     // this.makePopUp();
     return (
@@ -265,7 +276,7 @@ class Dashboard extends Component {
       Today: {now}
       </Text>
       </View>
-      <View style={{ justifyContent: 'flex-start'}}>
+      <View style={{flex: 1, justifyContent: 'flex-start'}}>
       <ListView
       style={{  marginTop: 1, paddingTop: 1}}
       enableEmptySections={true}

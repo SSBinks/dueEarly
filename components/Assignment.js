@@ -145,7 +145,8 @@ class Assignment extends Component {
   goHome() {
     console.log('this is the text' + this.state.text);
     this.props.navigator.pop({
-      component: Dashboard
+      component: Dashboard,
+      passProps: this.state
     })
   }
   //Modal setting!
