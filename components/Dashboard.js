@@ -8,7 +8,7 @@ import {
   ListView,
   TouchableHighlight,
   Modal,
-Slider
+  Slider
 
 } from 'react-native';
 
@@ -37,6 +37,7 @@ class Dashboard extends Component {
       modalVisible: false,
       transparent: false,
       info: this.information,
+      statusColor: '#f9f6b8'
     };
   }
 
@@ -76,28 +77,42 @@ class Dashboard extends Component {
     this.setState({ info: rowData });
     this.appendAssignment();
   }
-appendAssignment() {
-  console.log('This is the id' + this.state.info._id);
-  console.log('I am getting here!');
-  const id = this.state.info._id;
-  fetch('http://www.whats-due.com/assign/update/' + id, {
-  method: 'PUT',
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    title: this.state.info.text,
-    dueDate: this.state.info.date,
-    complete: this.state.info.complete,
-    categories: this.state.info.deliverable,
-    part: this.state.info.parts,
-    completionAmount: this.state.info.completionAmount,
-    goal: this.state.info.goal,
-    dailyGoal: this.state.info.dailyGoal
-  })
-});
-}
+
+  updateProgress() {
+    const num = parseInt(this.state.info.completionAmount) / parseInt(this.state.info.goal);
+    console.log('In the onSetProgress this is num' + num);
+    const percent = num * 100;
+    console.log('In the onSetProgress this is percent' + percent);
+    const obj = this.state.info;
+    obj.progress = percent;
+    this.setState({ info: obj });
+    console.log('In the onSetProgress this is progress' + this.state.progress);
+  }
+  appendAssignment() {
+    // if( this.state.info._id === undefined) {
+    //   this.updateProgress();
+    // }
+    console.log('This is the id' + this.state.info._id);
+    console.log('I am getting here!');
+    const id = this.state.info._id;
+    fetch('http://www.whats-due.com/assign/update/' + id, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: this.state.info.text,
+        dueDate: this.state.info.date,
+        complete: this.state.info.complete,
+        categories: this.state.info.deliverable,
+        part: this.state.info.parts,
+        completionAmount: this.state.info.completionAmount,
+        goal: this.state.info.goal,
+        dailyGoal: this.state.info.dailyGoal
+      })
+    });
+  }
   editAssignment() {
     this.props.navigator.push({
       title: 'Update Me',
@@ -105,7 +120,7 @@ appendAssignment() {
       passProps: this.state.info,
     });
   }
-  changeSlider(){
+  changeSlider() {
     const obj = this.state.info;
     obj.completionAmount = value;
     this.setState(info: obj);
@@ -167,8 +182,20 @@ appendAssignment() {
 
   render() {
     var modalBackgroundStyle = {
-      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
+      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff'
     };
+    // const tabColor = {
+    //   if(this.state.info.complete === true){
+    //     backgroundColor: '#caf9db'
+    //   }
+    //   else if(this.state.info.progress > 50) {
+    //     backgroundColor: '#f9f6b8'
+    //   }
+    //   else {
+    //     backgroundColor: '#ffcccc'
+    //   }
+    // };
+
     const innerContainerTransparentStyle = this.state.transparent
     ? { backgroundColor: '#f9f6b8', padding: 20 }
     : null;
@@ -194,9 +221,9 @@ appendAssignment() {
       >
       {this.state.info.title} {'\n'}
       This is Due: {moment().format('l')} {'\n'}
-      Progress: {this.state.info.progress} {'\n'}
+      Progress: {parseInt(this.state.info.progress).toFixed(0)} % {'\n'}
       </Text>
-        <Text>Currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)} </Text>
+      <Text>Currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)} </Text>
       <View style={{alignItems: 'stretch', justifyContent: 'center'}}>
 
       <Slider
@@ -204,8 +231,11 @@ appendAssignment() {
       minimumTrackTintColor={'white'}
       value={parseInt(this.state.info.completionAmount)}
       onValueChange={(value) => {
+        const num = parseInt(this.state.info.completionAmount) / parseInt(this.state.info.goal);
+        const percent = num * 100;
         const obj = this.state.info;
         obj.completionAmount = value;
+        obj.progress = percent;
         this.setState({ info: obj });
       }}
       maximumValue={ parseInt(this.state.info.goal) }
