@@ -92,7 +92,7 @@ class Dashboard extends Component {
     // if( this.state.info._id === undefined) {
     //   this.updateProgress();
     // }
-    console.log('This is the id' + this.state.info._id);
+    console.log('This is the percent' + this.state.info.progress);
     console.log('I am getting here!');
     const id = this.state.info._id;
     fetch('http://www.whats-due.com/assign/update/' + id, {
@@ -153,15 +153,7 @@ class Dashboard extends Component {
   }
 
   renderRow(rowData) {
-    if (this.state.info.completionAmount === this.state.info.goal){
-      var tabColor = { backgroundColor: '#caf9db' }
-    }
-    else if(parseInt(this.state.info.progress) >= 50) {
-      var tabColor = {  backgroundColor: '#f9f6b8' }
-    }
-    else {
-      var tabColor = {backgroundColor: '#ffcccc' }
-    }
+
 
     return (
     <View>
@@ -172,7 +164,7 @@ class Dashboard extends Component {
       onPress={this.setModalVisible.bind(this, true, rowData)}
       >
       <View style={styles.rowContainer} >
-      <View style={[styles.textContainter, tabColor]}>
+      <View style={styles.textContainter}>
       <Text
       style={styles.toDo}
       numberOfLines={1}
@@ -190,10 +182,20 @@ class Dashboard extends Component {
       backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff'
     };
 
+    if (parseInt(this.state.info.progress) >= 90){
+      var tabColor = { backgroundColor: '#caf9db', padding: 20  }
+    }
+    else if(parseInt(this.state.info.progress) >= 50) {
+      var tabColor = {  backgroundColor: '#f9f6b8', padding: 20  }
+    }
+    else {
+      var tabColor = {backgroundColor: '#ffcccc', padding: 20  }
+    }
 
-    const innerContainerTransparentStyle = this.state.transparent
-    ? { backgroundColor: '#f9f6b8', padding: 20 }
-    : null;
+
+    // const innerContainerTransparentStyle = this.state.transparent
+    // ? { backgroundColor: '#f9f6b8', padding: 20 }
+    // : null;
     console.log('I am getting to the render!');
     console.log('this is the assignment' + this.state.info.completionAmount);
     // this.makePopUp();
@@ -208,7 +210,7 @@ class Dashboard extends Component {
       >
       <View style={[styles.container, { justifyContent: 'center' }, modalBackgroundStyle]}>
       <View
-      style={[styles.innerContainer, innerContainerTransparentStyle]}
+      style={[styles.innerContainer, tabColor]}
       >
       <Text
       onPress={this.setModalVisible.bind(this, false)}

@@ -162,7 +162,7 @@ class Assignment extends Component {
     this.setState({ partModal: visible });
   }
   makeNewAssignment() {
-    console.log('MAKING A NEW ASSIGNMENT !!!' + this.state.text);
+    console.log('MAKING A NEW ASSIGNMENT  BUt testing progress!!!!' + this.state.progress);
     if (this.state.text !== '') {
       fetch('http://www.whats-due.com/assign/', {
         method: 'POST',
@@ -177,6 +177,7 @@ class Assignment extends Component {
           categories: ASSIGNMENT_TYPES[this.state.deliverable].type,
           part: PARTS[this.state.parts].type,
           completionAmount: this.state.completionAmount,
+          progress: this.state.progress,
           goal: this.state.goal,
           dailyGoal: this.state.dailyGoal
         })
