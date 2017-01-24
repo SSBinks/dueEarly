@@ -120,12 +120,7 @@ class Dashboard extends Component {
       passProps: this.state.info,
     });
   }
-  changeSlider() {
-    const obj = this.state.info;
-    obj.completionAmount = value;
-    this.setState(info: obj);
 
-  }
   getCurrentAssignment() {
     console.log("HIIIII");
     const today = moment().format('MM-DD-YYYY');
@@ -158,8 +153,18 @@ class Dashboard extends Component {
   }
 
   renderRow(rowData) {
+    if (this.state.info.completionAmount === this.state.info.goal){
+      var tabColor = { backgroundColor: '#caf9db' }
+    }
+    else if(parseInt(this.state.info.progress) >= 50) {
+      var tabColor = {  backgroundColor: '#f9f6b8' }
+    }
+    else {
+      var tabColor = {backgroundColor: '#ffcccc' }
+    }
+
     return (
-      <View>
+    <View>
       <TouchableHighlight
       underlayColor='#dddddd'
       // onHideUnderlay={this._onUnhighlight}
@@ -167,7 +172,7 @@ class Dashboard extends Component {
       onPress={this.setModalVisible.bind(this, true, rowData)}
       >
       <View style={styles.rowContainer} >
-      <View style={styles.textContainter}>
+      <View style={[styles.textContainter, tabColor]}>
       <Text
       style={styles.toDo}
       numberOfLines={1}
@@ -184,17 +189,7 @@ class Dashboard extends Component {
     var modalBackgroundStyle = {
       backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff'
     };
-    // const tabColor = {
-    //   if(this.state.info.complete === true){
-    //     backgroundColor: '#caf9db'
-    //   }
-    //   else if(this.state.info.progress > 50) {
-    //     backgroundColor: '#f9f6b8'
-    //   }
-    //   else {
-    //     backgroundColor: '#ffcccc'
-    //   }
-    // };
+
 
     const innerContainerTransparentStyle = this.state.transparent
     ? { backgroundColor: '#f9f6b8', padding: 20 }
