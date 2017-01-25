@@ -53,7 +53,7 @@ class Dashboard extends Component {
 
   onClassesPressed() {
     this.props.navigator.push({
-      title: 'My Courses',
+      title: 'Search',
       component: Course,
       tintColor: 'black',
     });
@@ -226,12 +226,11 @@ class Dashboard extends Component {
       <Text
       onPress={this.setModalVisible.bind(this, false)}
       onLongPress={this.editAssignment.bind(this)}
-      >
-      {this.state.info.title} {'\n'}
-      This is Due: {moment(this.state.info.dueDate).utc().format('l')} {'\n'}
-      Progress: {parseInt(this.state.info.progress).toFixed(0)} % {'\n'}
-      </Text>
-      <Text>Currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)} </Text>
+      style={{fontSize: 15, fontFamily: 'ChalkboardSE-Regular', letterSpacing: 0 }}>
+      This is Due: {moment(this.state.info.dueDate).utc().format('dddd[,] MMM Do')} {'\n'}
+      You are {parseInt(this.state.info.progress).toFixed(0)}% Complete{'\n'}
+      Your Daily Goal is: {parseInt(this.state.info.dailyGoal).toFixed(0)} {this.state.info.part}s {'\n'}
+      You are currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)} </Text>
       <View style={{alignItems: 'stretch', justifyContent: 'center'}}>
 
       <Slider

@@ -11,8 +11,11 @@ import {
   Modal,
   Button,
   Switch,
+  PushNotificationIOS,
+  AlertIOS
 } from 'react-native';
 
+var PushNotification = require('react-native-push-notification');
 // import ModalDropdown from 'react-native-modal-dropdown';
 const AssignmentEdit = require('./AssignmentEdit');
 const Course = require('./Course');
@@ -102,6 +105,54 @@ class Assignment extends Component {
       goal: '',
       dailyGoal: 0
     };
+  }
+
+  componentWillMount(){
+    PushNotificationIOS.addEventListener('notification', this._onRemoteNotification);
+    PushNotificationIOS.addEventListener('localNotification', this._onLocalNotification);
+    PushNotificationIOS.requestPermissions();
+  }
+  componentWillUnmount(){
+    console.log("YOU BE A SCHEDULIN!")
+    PushNotificationIOS.scheduleLocalNotification({
+      fireDate: new Date().getDate(),
+      repeatInterval: 'minute',
+      alertbody: "test test Test"
+    });
+  }
+
+    _onRemoteNotification(notification) {
+      AlertIOS.alert(
+        'Push Notification Received',
+        'Alert message: ' + notification.getMessage(),
+        [{
+          text: 'Dismiss',
+          onPress: null,
+        }]
+      );
+
+
+    }
+
+    _onLocalNotification(notification){
+      // let myGoal = this.state.dailyGoal;
+      AlertIOS.alert(
+        'New Assignment Created',
+        'Check for your Daily Goal!' 
+        [{
+          text: 'Dismiss',
+          onPress: null,
+        }]
+      );
+    }
+
+  onScheduleLocalNotification() {
+    console.log('This is being scheduled')
+    PushNotificationIOS.scheduleLocalNotification({
+      fireDate: new Date().getDate(),
+      repeatInterval: 'day',
+      alertbody: "test test Test"
+    });
   }
   onAssignType() {
     this.props.navigator.push({
