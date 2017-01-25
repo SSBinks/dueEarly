@@ -1,84 +1,132 @@
 'use strict';
 import React, { Component } from 'react';
 import {
+  StyleSheet,
   Text,
   View,
-  StyleSheet,
+  TextInput,
+  PickerIOS,
+  DatePickerIOS,
   TouchableHighlight,
   Modal,
+  AlertIOS,
+  Slider,
+  Button,
+  PushNotificationIOS
 } from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
-// import React, { Component } from 'react';
-// import { Modal, Text, TouchableHighlight, View } from 'react-native';
+
 class Course extends Component {
-//   render() {
-//     return (
-//       <View style={styles.container}>
-//       <Text>
-//       Add ya Courses Here
-//       </Text>
-//       </View>
-//     );
-//   }
-// }
-//
-
-
-//
-//
-
-  state = {
-    modalVisible: false,
+  constructor(props) {
+    super(props);
+    value: 0;
+    this.state = {
+    value:  this.props.value
+    }
+  }
+  _sendNotification() {
+    require('RCTDeviceEventEmitter').emit('remoteNotificationReceived', {
+      aps: {
+        alert: 'Sample notification',
+        badge: '+1',
+        sound: 'default',
+        category: 'REACT_NATIVE'
+      },
+    });
   }
 
-  setModalVisible(visible) {
-    this.setState( { modalVisible: visible } );
+  _sendLocalNotification() {
+    require('RCTDeviceEventEmitter').emit('localNotificationReceived', {
+      aps: {
+        alert: 'Sample local notification',
+        badge: '+1',
+        sound: 'default',
+        category: 'REACT_NATIVE'
+      },
+    });
   }
-  shariText() {
-    console.log('I found Shari!')
-    return (
-      <View>
-      <Text> Shari Shari </Text>
-      </View>
+
+  _onRegistered(deviceToken) {
+    AlertIOS.alert(
+      'Registered For Remote Push',
+      `Device Token: ${deviceToken}`,
+      [{
+        text: 'Dismiss',
+        onPress: null,
+      }]
     );
+  }
+
+  _onRegistrationError(error) {
+    AlertIOS.alert(
+      'Failed To Register For Remote Push',
+      `Error (${error.code}): ${error.message}`,
+      [{
+        text: 'Dismiss',
+        onPress: null,
+      }]
+    );
+  }
+
+  _onRemoteNotification(notification) {
+    AlertIOS.alert(
+      'Push Notification Received',
+      'Alert message: ' + notification.getMessage(),
+      [{
+        text: 'Dismiss',
+        onPress: null,
+      }]
+    );
+  }
+
+  _onLocalNotification(notification){
+    AlertIOS.alert(
+      'Local Notification Received',
+      'Alert message: ' + notification.getMessage(),
+      [{
+        text: 'Dismiss',
+        onPress: null,
+      }]
+    );
+  }
+
+  componentWillMount() {
+    PushNotificationIOS.addEventListener('register', this._onRegistered);
+    PushNotificationIOS.addEventListener('registrationError', this._onRegistrationError);
+    PushNotificationIOS.addEventListener('notification', this._onRemoteNotification);
+    PushNotificationIOS.addEventListener('localNotification', this._onLocalNotification);
+
+    PushNotificationIOS.requestPermissions();
+  }
+
+  componentWillUnmount() {
+    PushNotificationIOS.removeEventListener('register', this._onRegistered);
+    PushNotificationIOS.removeEventListener('registrationError', this._onRegistrationError);
+    PushNotificationIOS.removeEventListener('notification', this._onRemoteNotification);
+    PushNotificationIOS.removeEventListener('localNotification', this._onLocalNotification);
   }
 
   render() {
     return (
+
       <View style={styles.container}>
-        <Modal
-
-          animationType={"slide"}
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {alert("Modal has been closed.")}}
-          >
-         <View style={{marginTop: 22}}>
-          <View>
-            <Text>Hello World!</Text>
-            <ModalDropdown  options={[  <View style={{ width: 40, height: 40 }}>
-              <Text> Shari Shari </Text>
-              </View>]} >
-            <Text> derp </Text>
-
-            </ModalDropdown>
-            <TouchableHighlight onPress={() => {
-              this.setModalVisible(!this.state.modalVisible)
-            }}>
-              <Text>Hide Modal</Text>
-
-            </TouchableHighlight>
-
-          </View>
-         </View>
-        </Modal>
-
-        <TouchableHighlight onPress={() => {
-          this.setModalVisible(true)
-        }}>
-          <Text>Show Modal</Text>
-        </TouchableHighlight>
-
+      <View>
+        <Text style={styles.text} >
+          {this.state.value && +this.state.value.toFixed(3)}
+        </Text>
+        <Slider
+          maximumValue={10}
+          onValueChange={(value) => this.setState({value: value})} />
+      </View>
+      <Button
+         onPress={this._sendNotification}
+         label="Send fake notification"
+         title='this is the send'
+      />
+      <Button
+      onPress={this._sendLocalNotification}
+      label="Send fake local notification"
+      title='Hello Shar shar'
+      />
       </View>
     );
   }
@@ -86,11 +134,10 @@ class Course extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flex: 1,
-    marginTop: 65,
-    padding: 5,
-  }
+    marginTop: 40,
+    paddingTop: 40,
+    backgroundColor: 'white',
+  },
 });
-
 module.exports = Course;
