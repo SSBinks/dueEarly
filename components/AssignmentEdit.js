@@ -102,11 +102,7 @@ class AssignmentEdit extends Component {
     };
     console.log('This is props part ' + this.props.part);
   }
-  onAssignType() {
-    this.props.navigator.push({
-      component: AssignmentEdit
-    });
-  }
+
   onDateChange = (date) => {
     console.log('Date is a changin' + date);
     this.setState({ date: date });
@@ -161,11 +157,17 @@ class AssignmentEdit extends Component {
   setPartModal(visible) {
     this.setState({ partModal: visible });
   }
-  makeNewAssignment() {
-    console.log('MAKING A NEW ASSIGNMENT  BUt testing progress!!!!' + this.state.progress);
+
+  appendAssignment() {
+    // if( this.state.info._id === undefined) {
+    //   this.updateProgress();
+    // }
+    console.log('This is the percent' + this.state.progress);
+    console.log('I am getting here!');
     if (this.state.text !== '') {
-      fetch('http://www.whats-due.com/assign/', {
-        method: 'POST',
+      const id = this.props._id;
+      fetch('http://www.whats-due.com/assign/update/' + id, {
+        method: 'PUT',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -177,94 +179,141 @@ class AssignmentEdit extends Component {
           categories: ASSIGNMENT_TYPES[this.state.deliverable].type,
           part: PARTS[this.state.parts].type,
           completionAmount: this.state.completionAmount,
-          progress: this.state.progress,
           goal: this.state.goal,
+          progress: this.state.progress,
           dailyGoal: this.state.dailyGoal
         })
-
-      }).catch((error) => {
-        console.error("You don't want zero problems big fella" + error);
       });
-
       this.goHome();
     }
-    else {
-      this.setState({ warningColor: '#f4cecd' });
+      else {
+        this.setState({ warningColor: '#f4cecd' });
+      }
     }
-  }
+    render() {
+      var modalBackgroundStyle = {
+        backgroundColor: this.state.typeModal ? 'rgba(0, 0, 0, 0.5)' : 'white',
+      };
+      console.log('this is in the progress' + this.state.progress);
+      console.log('this is in the daily Goal' + this.state.dailyGoal);
+      const turnin = ASSIGNMENT_TYPES[this.state.deliverable]
+      this.progress = turnin.progress;
+      // console.log(COURSES[this.state.course].title);
+      return (
+        // This is the input for the assingment
+        <View style={styles.container}>
 
-  render() {
-    var modalBackgroundStyle = {
-      backgroundColor: this.state.typeModal ? 'rgba(0, 0, 0, 0.5)' : 'white',
-    };
-    console.log('this is in the progress' + this.state.progress);
-    console.log('this is in the daily Goal' + this.state.dailyGoal);
-    const turnin = ASSIGNMENT_TYPES[this.state.deliverable]
-    this.progress = turnin.progress;
-    // console.log(COURSES[this.state.course].title);
-    return (
-      // This is the input for the assingment
-      <View style={styles.container}>
+        <View style={styles.headingContainer}>
+        <View style={[styles.input, { backgroundColor: this.state.warningColor }]}>
+        <TextInput
+        style={styles.textInputDecor}
+        placeholder={this.state.text}
+        placeholderTextColor='black'
+        numberOfLines={1}
+        placeholderTextColor='grey'
+        onChangeText={(text) => this.setState({ text })}
 
-      <View style={styles.headingContainer}>
-      <View style={[styles.input, { backgroundColor: this.state.warningColor }]}>
-      <TextInput
-      style={styles.textInputDecor}
-      placeholder={this.state.text}
-      placeholderTextColor='black'
-      numberOfLines={1}
-      placeholderTextColor='grey'
-      onChangeText={(text) => this.setState({ text })}
+        value={this.state.text}
+        />
+        </View>
+        </View>
 
-      value={this.state.text}
+        {/*This is the selector for the type of assignment*/}
+
+        <TouchableHighlight
+        style={styles.headingContainer}
+        onPress={this.setTypeModal.bind(this, true)}
+        >
+        <View style={styles.section}>
+        <Text style={styles.heading}>
+        I am working on a... {ASSIGNMENT_TYPES[this.state.deliverable].type}
+        </Text>
+        </View>
+        </TouchableHighlight>
+
+
+        <Modal
+        visible={this.state.typeModal}
+        animationType='slide'
+        transparent={true}
+        >
+        <View style={[styles.container, { justifyContent: 'center' }, modalBackgroundStyle]}>
+        <View style={{ backgroundColor: 'white'  }}>
+        <View style={{ paddingTop: 5,}}>
+        <Text style={styles.modalHeading}> Assignment Type </Text>
+        </View>
+        <PickerIOS
+        itemStyle={styles.picker}
+        selectedValue={this.state.deliverable}
+        onValueChange={(deliverable) => this.setState({ deliverable })}
+
+        >
+        {Object.keys(ASSIGNMENT_TYPES).map((deliverable) => (
+          <PickerItemIOS
+          key={deliverable}
+          value={deliverable}
+          label={ASSIGNMENT_TYPES[deliverable].type}
+          />
+        )
+        // console.log(this.state.course);
+      )}
+      </PickerIOS>
+      <View style={styles.button}>
+      <Button
+      onPress={this.setTypeModal.bind(this, false)}
+      title='Choose Assignment'
+      color='black'
       />
       </View>
       </View>
+      </View>
 
-      {/*This is the selector for the type of assignment*/}
+      </Modal>
+
+      {/* This is where the parts are selected*/}
 
       <TouchableHighlight
       style={styles.headingContainer}
-      onPress={this.setTypeModal.bind(this, true)}
+      onPress={this.setPartModal.bind(this, true)}
       >
       <View style={styles.section}>
       <Text style={styles.heading}>
-      I am working on a... {ASSIGNMENT_TYPES[this.state.deliverable].type}
+      I need to divide this by... {PARTS[this.state.parts].type}
       </Text>
       </View>
       </TouchableHighlight>
 
 
       <Modal
-      visible={this.state.typeModal}
+      visible={this.state.partModal}
       animationType='slide'
       transparent={true}
       >
-      <View style={[styles.container, { justifyContent: 'center' }, modalBackgroundStyle]}>
-      <View style={{ backgroundColor: 'white'  }}>
-      <View style={{ paddingTop: 5,}}>
-      <Text style={styles.modalHeading}> Assignment Type </Text>
+      <View style={[styles.container, { justifyContent: 'center' }, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
+      <View style={{ backgroundColor: 'white', justifyContent: 'center' }}>
+      <View style={{ paddingTop: 5 }}>
+      <Text style={styles.modalHeading}> Section Type </Text>
       </View>
       <PickerIOS
       itemStyle={styles.picker}
-      selectedValue={this.state.deliverable}
-      onValueChange={(deliverable) => this.setState({ deliverable })}
+      selectedValue={this.state.parts}
+      onValueChange={(parts) => this.setState({ parts })}
 
       >
-      {Object.keys(ASSIGNMENT_TYPES).map((deliverable) => (
+      {Object.keys(PARTS).map((parts) => (
         <PickerItemIOS
-        key={deliverable}
-        value={deliverable}
-        label={ASSIGNMENT_TYPES[deliverable].type}
+        key={parts}
+        value={parts}
+        label={PARTS[parts].type}
         />
       )
-      // console.log(this.state.course);
+
     )}
     </PickerIOS>
     <View style={styles.button}>
     <Button
-    onPress={this.setTypeModal.bind(this, false)}
-    title='Choose Assignment'
+    onPress={this.setPartModal.bind(this, false)}
+    title='Confirm Part'
     color='black'
     />
     </View>
@@ -272,161 +321,109 @@ class AssignmentEdit extends Component {
     </View>
 
     </Modal>
+    {/* This is where the input start and endput*/}
+    <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around' }}>
+    <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
+    <TextInput
+    style={[styles.textInputDecor, { textAlign: 'center' }, {justifyContent: 'flex-end'}]}
+    placeholder={(this.state.completionAmount).substring(0, 2)}
+    placeholderTextColor='black'
+    numberOfLines={1}
+    placeholderTextColor='grey'
+    onEndEditing={this.onSetProgress.bind(this)}
+    onChangeText={(completionAmount) => this.setState({ completionAmount })}
+    value={this.state.completionAmount}
+    />
+    </View>
+    <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
+    <TextInput
+    style={[styles.textInputDecor, { textAlign: 'center' }, {justifyContent: 'flex-end'}]}
+    placeholder={this.state.goal}
+    placeholderTextColor='black'
+    returnKeyType='done'
+    numberOfLines={1}
+    placeholderTextColor='grey'
+    onChangeText={(goal) => this.setState({ goal })}
+    value={this.state.goal}
+    onEndEditing={this.onSetProgress.bind(this)}
+    onSubmitEditing={this.onSetProgress.bind(this)}
+    />
+    </View>
+    </View>
 
-    {/* This is where the parts are selected*/}
-
-    <TouchableHighlight
-    style={styles.headingContainer}
-    onPress={this.setPartModal.bind(this, true)}
-    >
-    <View style={styles.section}>
-    <Text style={styles.heading}>
-    I need to divide this by... {PARTS[this.state.parts].type}
+    {/* These are the switches*/}
+    <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around', marginBottom: 10 }}>
+    <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
+    <Text>Daily Notifications
+    <Switch
+    onTintColor='white'
+    onValueChange={(value) => this.setState({ daily: value })}
+    style={{ marginTop: 10 }}
+    value={this.state.daily}
+    />
     </Text>
+    </View>
+    <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
+    <Text>Weekly Notifications
+    <Switch
+    onTintColor='white'
+    onValueChange={(value) => this.setState({ weekly: value })}
+    style={{ marginTop: 10 }}
+    value={this.state.weekly}
+    />
+    </Text>
+    </View>
+    </View>
+
+    {/* This is the beginning of the date stuff*/}
+    <TouchableHighlight
+    >
+    <View style={styles.headingContainer}>
+    <View style={styles.section}>
+    <Text style={styles.heading}
+    onPress={this.setdateModal.bind(this, true)}>
+    This is due on... {moment(this.state.date).format('L')}
+    </Text>
+    </View>
     </View>
     </TouchableHighlight>
 
-
     <Modal
-    visible={this.state.partModal}
+    visible={this.state.dateModal}
     animationType='slide'
     transparent={true}
     >
-    <View style={[styles.container, { justifyContent: 'center' }, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
-    <View style={{ backgroundColor: 'white', justifyContent: 'center' }}>
-    <View style={{ paddingTop: 5 }}>
-    <Text style={styles.modalHeading}> Section Type </Text>
+    <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
+    <View style={{ backgroundColor: 'white', justifyContent: 'center'}}>
+    <Text style={styles.modalHeading}> The Date </Text>
+    <View style={{padding: 5}}>
+    <DatePickerIOS
+    minimumDate={this.props.date}
+    style={styles.date}
+    date={this.state.date}
+    mode='date'
+    onDateChange={this.onDateChange}
+    />
+    <View style={styles.button}>
+    <Button
+    onPress={this.setdateModal.bind(this, false)}
+    title='Confirm Date'
+    color='black'
+    />
     </View>
-    <PickerIOS
-    itemStyle={styles.picker}
-    selectedValue={this.state.parts}
-    onValueChange={(parts) => this.setState({ parts })}
-
-    >
-    {Object.keys(PARTS).map((parts) => (
-      <PickerItemIOS
-      key={parts}
-      value={parts}
-      label={PARTS[parts].type}
-      />
-    )
-
-  )}
-  </PickerIOS>
-  <View style={styles.button}>
-  <Button
-  onPress={this.setPartModal.bind(this, false)}
-  title='Confirm Part'
-  color='black'
-  />
-  </View>
-  </View>
-  </View>
-
-  </Modal>
-  {/* This is where the input start and endput*/}
-  <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around' }}>
-  <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
-  <TextInput
-  style={[styles.textInputDecor, { textAlign: 'center' }, {justifyContent: 'flex-end'}]}
-  placeholder={(this.state.completionAmount).substring(0, 2)}
-  placeholderTextColor='black'
-  numberOfLines={1}
-  placeholderTextColor='grey'
-  onEndEditing={this.onSetProgress.bind(this)}
-  onChangeText={(completionAmount) => this.setState({ completionAmount })}
-  value={this.state.completionAmount}
-  />
-  </View>
-  <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
-  <TextInput
-  style={[styles.textInputDecor, { textAlign: 'center' }, {justifyContent: 'flex-end'}]}
-  placeholder={this.state.goal}
-  placeholderTextColor='black'
-  returnKeyType='done'
-  numberOfLines={1}
-  placeholderTextColor='grey'
-  onChangeText={(goal) => this.setState({ goal })}
-  value={this.state.goal}
-  onEndEditing={this.onSetProgress.bind(this)}
-  onSubmitEditing={this.onSetProgress.bind(this)}
-  />
-  </View>
-  </View>
-
-  {/* These are the switches*/}
-  <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-around', marginBottom: 10 }}>
-  <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
-  <Text>Daily Notifications
-  <Switch
-  onTintColor='white'
-  onValueChange={(value) => this.setState({ daily: value })}
-  style={{ marginTop: 10 }}
-  value={this.state.daily}
-  />
-  </Text>
-  </View>
-  <View style={{width: 150, height: 36,  borderBottomColor: 'grey', borderBottomWidth: 2 }}>
-  <Text>Weekly Notifications
-  <Switch
-  onTintColor='white'
-  onValueChange={(value) => this.setState({ weekly: value })}
-  style={{ marginTop: 10 }}
-  value={this.state.weekly}
-  />
-  </Text>
-  </View>
-  </View>
-
-  {/* This is the beginning of the date stuff*/}
-  <TouchableHighlight
-  >
-  <View style={styles.headingContainer}>
-  <View style={styles.section}>
-  <Text style={styles.heading}
-  onPress={this.setdateModal.bind(this, true)}>
-  This is due on... {moment(this.state.date).format('L')}
-  </Text>
-  </View>
-  </View>
-  </TouchableHighlight>
-
-  <Modal
-  visible={this.state.dateModal}
-  animationType='slide'
-  transparent={true}
-  >
-  <View style={[styles.container, { justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
-  <View style={{ backgroundColor: 'white', justifyContent: 'center'}}>
-  <Text style={styles.modalHeading}> The Date </Text>
-  <View style={{padding: 5}}>
-  <DatePickerIOS
-  minimumDate={this.props.date}
-  style={styles.date}
-  date={this.state.date}
-  mode='date'
-  onDateChange={this.onDateChange}
-  />
-  <View style={styles.button}>
-  <Button
-  onPress={this.setdateModal.bind(this, false)}
-  title='Confirm Date'
-  color='black'
-  />
-  </View>
-  </View>
-  </View>
-  </View>
-  </Modal>
-  <View style={{ margin: 30, justifyContent: 'flex-end', backgroundColor: '#f9f6b8' }}>
-  <Button
-  onPress={this.makeNewAssignment.bind(this)}
-  title='Create Assignment'
-  color='black'
-  />
-  </View>
-  </View>
-);
+    </View>
+    </View>
+    </View>
+    </Modal>
+    <View style={{ margin: 30, justifyContent: 'flex-end', backgroundColor: '#f9f6b8' }}>
+    <Button
+    onPress={this.appendAssignment.bind(this)}
+    title='Create Assignment'
+    color='black'
+    />
+    </View>
+    </View>
+  );
 }
 }
 

@@ -46,6 +46,7 @@ class Dashboard extends Component {
     this.props.navigator.push({
       title: 'Schedule An Assignment',
       component: Assignment,
+      tintColor: 'black',
     });
     console.log('You Pressed Add!');
   }
@@ -53,7 +54,8 @@ class Dashboard extends Component {
   onClassesPressed() {
     this.props.navigator.push({
       title: 'My Courses',
-      component: Course
+      component: Course,
+      tintColor: 'black',
     });
     console.log('You are trying to see some classes');
   }
@@ -62,9 +64,6 @@ class Dashboard extends Component {
   componentWillReceiveProps() {
     this.getCurrentAssignment();
   }
-  // componentDidUpdate(prevProps) {
-  //     // console.log('should compoennet update happennin' + preProps);
-  //   }
 
   onInProgressPressed() {
     console.log('You want to see what is in Progress yay!' + this.assignment);
@@ -123,6 +122,7 @@ class Dashboard extends Component {
   editAssignment() {
     this.props.navigator.push({
       title: 'Update Me',
+      tintColor: 'black',
       component: AssignmentEdit,
       passProps: this.state.info,
     });
@@ -131,9 +131,9 @@ class Dashboard extends Component {
 
   getCurrentAssignment() {
     console.log("HIIIII");
-    const today = moment().format('MM-DD-YYYY');
-    const url = 'http://www.whats-due.com/assign/' + today;
-    console.log("Today is " + today);
+    // const today = moment().format('MM-DD-YYYY');
+    const url = 'http://www.whats-due.com/';
+    // console.log("Today is " + today);
     console.log( 'this is the url ' + url);
     fetch(url, {
 
@@ -228,7 +228,7 @@ class Dashboard extends Component {
       onLongPress={this.editAssignment.bind(this)}
       >
       {this.state.info.title} {'\n'}
-      This is Due: {moment().format('l')} {'\n'}
+      This is Due: {moment(this.state.info.dueDate).utc().format('l')} {'\n'}
       Progress: {parseInt(this.state.info.progress).toFixed(0)} % {'\n'}
       </Text>
       <Text>Currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)} </Text>
