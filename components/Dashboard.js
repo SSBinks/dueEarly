@@ -307,12 +307,9 @@ const styles = StyleSheet.create({
   innerContainer: {
     borderRadius: 10,
     alignItems: 'center',
-
   },
   head: {
-
     padding: 20,
-
   },
   time: {
     fontFamily: 'Chalkboard SE',
@@ -357,7 +354,8 @@ const styles = StyleSheet.create({
   },
   menu: {
     textAlign: 'center',
-  }
+  },
+
 });
 
 module.exports = Dashboard;

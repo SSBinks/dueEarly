@@ -116,8 +116,8 @@ class Assignment extends Component {
     console.log("YOU BE A SCHEDULIN!")
     PushNotificationIOS.scheduleLocalNotification({
       fireDate: new Date().getDate(),
-      repeatInterval: 'minute',
-      alertbody: "test test Test"
+      repeatInterval: 'day',
+      alertbody: 'Remember to stick to your Goals'
     });
   }
 
@@ -138,7 +138,7 @@ class Assignment extends Component {
       // let myGoal = this.state.dailyGoal;
       AlertIOS.alert(
         'New Assignment Created',
-        'Check for your Daily Goal!' 
+        'Check for your Daily Goal!'
         [{
           text: 'Dismiss',
           onPress: null,
