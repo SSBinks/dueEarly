@@ -24,7 +24,6 @@
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		97D1D1331E354385008AF797 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D1D11E1E3542C7008AF797 /* libRCTPushNotification.a */; };
-		97ED23381E382AF100AA8E18 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 97ED23371E382AF100AA8E18 /* Default-568h@2x.png */; };
 		9E1E8600EE8148D2BC706366 /* libRNNotifications.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1610DD7BDFE94EC79C3FDBBA /* libRNNotifications.a */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
@@ -232,7 +231,6 @@
 		97D1D10E1E3542C7008AF797 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		97D1D12A1E3542D4008AF797 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		97D47A921E3447E30023D3AF /* dueEarly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = dueEarly.entitlements; sourceTree = "<group>"; };
-		97ED23371E382AF100AA8E18 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		B8BEC9226C7B483B85AAFC75 /* RNNotifications.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNNotifications.xcodeproj; path = "../node_modules/react-native-notifications/RNNotifications/RNNotifications.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -419,7 +417,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				97ED23371E382AF100AA8E18 /* Default-568h@2x.png */,
 				13B07FAE1A68108700A75B9A /* dueEarly */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* dueEarlyTests */,
@@ -790,7 +787,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				97ED23381E382AF100AA8E18 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

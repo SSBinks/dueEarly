@@ -268,7 +268,6 @@ class Dashboard extends Component {
       <View
       style={styles.head}
       >
-
       <Text
       style={styles.time}
       >

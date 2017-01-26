@@ -195,7 +195,7 @@ class Course extends Component {
       style={{ backgroundColor: 'grey', borderRadius: 30, flex: 1, justifyContent: 'center' }}
       >
       <Text
-      style={{ textAlign: 'center', fontWeight: 'bold' }}
+      style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}
       onPress={this.setdateModal.bind(this, true)}
       > Date </Text>
       </View>
