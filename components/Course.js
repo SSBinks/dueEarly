@@ -183,8 +183,8 @@ class Course extends Component {
       <View style={styles.topMenu}>
       <TouchableHighlight>
       <View style={{ height: 80, width: 140, alignSelf: 'center' }}>
-      <View style={{ backgroundColor: 'grey', borderRadius: 30, flex: 1, justifyContent: 'center' }}>
-      <Text onPress={this.setTypeModal.bind(this, true)} style={{ textAlign: 'center', fontWeight: 'bold' }}> Category </Text>
+      <View style={{ shadowOpacity: 30, backgroundColor: 'grey', borderRadius: 30, flex: 1, justifyContent: 'center' }}>
+      <Text onPress={this.setTypeModal.bind(this, true)} style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}> Category </Text>
       </View>
       </View>
       </TouchableHighlight>
@@ -192,7 +192,7 @@ class Course extends Component {
       <TouchableHighlight>
       <View style={{ height: 80, width: 140, alignSelf: 'center' }}>
       <View
-      style={{ backgroundColor: 'grey', borderRadius: 30, flex: 1, justifyContent: 'center' }}
+      style={{ shadowOpacity: 30, backgroundColor: 'grey', borderRadius: 30, flex: 1, justifyContent: 'center' }}
       >
       <Text
       style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}

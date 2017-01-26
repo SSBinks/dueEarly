@@ -8,7 +8,8 @@ import {
   ListView,
   TouchableHighlight,
   Modal,
-  Slider
+  Slider,
+  AlertIOS
 
 } from 'react-native';
 
@@ -24,11 +25,9 @@ class Dashboard extends Component {
 
   constructor(props) {
     super(props);
-    console.log("First?");
     this.assignment = [];
     this.getCurrentAssignment();
     this.dailyTask = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    console.log("Re-check the assignment" + this.assignment);
     this.information = {};
 
     this.state = {
@@ -42,13 +41,17 @@ class Dashboard extends Component {
     };
   }
 
+
+  componentWillReceiveProps() {
+    this.getCurrentAssignment();
+  }
+
   onAddPressed() {
     this.props.navigator.push({
       title: 'Schedule An Assignment',
       component: Assignment,
       tintColor: 'black',
     });
-    console.log('You Pressed Add!');
   }
 
   onClassesPressed() {
@@ -57,43 +60,20 @@ class Dashboard extends Component {
       component: Course,
       tintColor: 'black',
     });
-    console.log('You are trying to see some classes');
-  }
-
-
-  componentWillReceiveProps() {
-    this.getCurrentAssignment();
   }
 
   onInProgressPressed() {
-    console.log('You want to see what is in Progress yay!' + this.assignment);
+    console.log('You want to see what is in Progress yay!');
   }
-  _onHighlight = () => {
-    this.setState({ active: true });
-  };
-  _onUnhighlight = () => {
-    this.setState({ active: false });
-  };
+
   setModalVisible(visible, rowData, other) {
-    console.log("Is it visible " + visible);
-    console.log("This was pressed " + rowData);
-    console.log('hopefully this is rowData' + other);
     this.setState({ transparent: !this.state.transparent });
     this.setState({ modalVisible: visible });
     this.setState({ info: rowData });
     this.appendAssignment();
   }
 
-  updateProgress() {
-    const num = parseInt(this.state.info.completionAmount) / parseInt(this.state.info.goal);
-    console.log('In the onSetProgress this is num' + num);
-    const percent = num * 100;
-    console.log('In the onSetProgress this is percent' + percent);
-    const obj = this.state.info;
-    obj.progress = percent;
-    this.setState({ info: obj });
-    console.log('In the onSetProgress this is progress' + this.state.progress);
-  }
+
   appendAssignment() {
     // if( this.state.info._id === undefined) {
     //   this.updateProgress();
@@ -130,26 +110,28 @@ class Dashboard extends Component {
 
 
   getCurrentAssignment() {
-    console.log("HIIIII");
-    // const today = moment().format('MM-DD-YYYY');
     const url = 'http://www.whats-due.com/';
-    // console.log("Today is " + today);
-    console.log( 'this is the url ' + url);
     fetch(url, {
 
     })
     .then((response) => response.json())
     .then((responseJson) => {
       this.assignment = responseJson;
-      console.log( "Let's go to the Assignment!" + this.assignment);
       this.setState({ assignments: this.assignment, dataSource: this.dailyTask.cloneWithRows(this.assignment) });
       return this.assignment;
     })
     .catch((error) => {
-      console.error("You don't want zero problems big fella" + error);
+      console.error('You dont want zero problems big fella' + error);
     });
   }
 
+  updateProgress() {
+    const num = parseInt(this.state.info.completionAmount) / parseInt(this.state.info.goal);
+    const percent = num * 100;
+    const obj = this.state.info;
+    obj.progress = percent;
+    this.setState({ info: obj });
+  }
 
   _onLocalNotification(notification) {
     AlertIOS.alert(
@@ -163,32 +145,29 @@ class Dashboard extends Component {
   }
 
   renderRow(rowData) {
-
-
     return (
       <View>
-      <TouchableHighlight
-      underlayColor='#dddddd'
-      // onHideUnderlay={this._onUnhighlight}
-      // onShowUnderlay={this._onHighlight}
-      onPress={this.setModalVisible.bind(this, true, rowData)}
-      >
-      <View style={styles.rowContainer} >
-      <View style={styles.textContainter}>
-      <Text
-      style={styles.toDo}
-      numberOfLines={1}
-      >{rowData.title}
-      </Text>
-      </View>
-      </View>
-      </TouchableHighlight>
+        <TouchableHighlight
+          underlayColor='#dddddd'
+          onPress={this.setModalVisible.bind(this, true, rowData)}
+        >
+          <View style={styles.rowContainer} >
+            <View style={styles.textContainter}>
+              <Text
+                style={styles.toDo}
+                numberOfLines={1}
+              >
+                {rowData.title}
+              </Text>
+          </View>
+          </View>
+        </TouchableHighlight>
       </View>
     );
   }
 
   render() {
-    var modalBackgroundStyle = {
+    const modalBackgroundStyle = {
       backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff'
     };
 
@@ -202,78 +181,71 @@ class Dashboard extends Component {
       var tabColor = {backgroundColor: '#ffcccc', padding: 20  }
     }
 
-
-    // const innerContainerTransparentStyle = this.state.transparent
-    // ? { backgroundColor: '#f9f6b8', padding: 20 }
-    // : null;
-    console.log('I am getting to the render!');
-    // this.shouldComponentUpdate();
-    console.log('this is the assignment' + this.state.info.completionAmount);
-    // this.makePopUp();
     return (
       <View
-      // source={Pic}
-      style={styles.container}
+        style={styles.container}
       >
-      <Modal
-      transparent={this.state.transparent}
-      visible={this.state.modalVisible}
-      >
-      <View style={[styles.container, { justifyContent: 'center' }, modalBackgroundStyle]}>
-      <View
-      style={[styles.innerContainer, tabColor]}
-      >
-      <Text
-      onPress={this.setModalVisible.bind(this, false)}
-      onLongPress={this.editAssignment.bind(this)}
-      style={{fontSize: 15, fontFamily: 'ChalkboardSE-Regular', letterSpacing: 0 }}>
-      This is Due: {moment(this.state.info.dueDate).utc().format('dddd[,] MMM Do')} {'\n'}
-      You are {parseInt(this.state.info.progress).toFixed(0)}% Complete{'\n'}
-      Your Daily Goal is: {parseInt(this.state.info.dailyGoal).toFixed(0)} {this.state.info.part}s {'\n'}
-      You are currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)} </Text>
-      <View style={{alignItems: 'stretch', justifyContent: 'center'}}>
+        <Modal
+          transparent={this.state.transparent}
+          visible={this.state.modalVisible}
+        >
+          <View style={[styles.container, { justifyContent: 'center' }, modalBackgroundStyle]}>
+            <View
+              style={[styles.innerContainer, tabColor]}
+            >
+              <Text
+                onPress={this.setModalVisible.bind(this, false)}
+                onLongPress={this.editAssignment.bind(this)}
+                style={{ fontSize: 15, fontFamily: 'ChalkboardSE-Regular', letterSpacing: 0 }}
+              >
+                This is Due: {moment(this.state.info.dueDate).utc().format('dddd[,] MMM Do')} {'\n'}
+                You are {parseInt(this.state.info.progress).toFixed(0)}% Complete{'\n'}
+                Your Daily Goal is: {parseInt(this.state.info.dailyGoal).toFixed(0)} {this.state.info.part}s {'\n'}
+                You are currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)}
+            </Text>
+              <View style={{ alignItems: 'stretch', justifyContent: 'center' }}>
+                <Slider
+                  style={{ height: 50, width: 250 }}
+                  minimumTrackTintColor={'white'}
+                  value={parseInt(this.state.info.completionAmount)}
+                  onValueChange={(value) => {
+                    const num = parseInt(this.state.info.completionAmount) / parseInt(this.state.info.goal);
+                    const percent = num * 100;
+                    const obj = this.state.info;
+                    obj.completionAmount = value;
+                    obj.progress = percent;
+                    this.setState({ info: obj });
+                  }}
+                  maximumValue={parseInt(this.state.info.goal)}
+              />
+            </View>
+            </View>
+          </View>
+        </Modal>
 
-      <Slider
-      style={{ height: 50, width: 250 }}
-      minimumTrackTintColor={'white'}
-      value={parseInt(this.state.info.completionAmount)}
-      onValueChange={(value) => {
-        const num = parseInt(this.state.info.completionAmount) / parseInt(this.state.info.goal);
-        const percent = num * 100;
-        const obj = this.state.info;
-        obj.completionAmount = value;
-        obj.progress = percent;
-        this.setState({ info: obj });
-      }}
-      maximumValue={ parseInt(this.state.info.goal) }
-      />
-      </View>
-      </View>
-      </View>
-      </Modal>
+        <View
+          style={styles.topMenu}
+        >
+          <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onInProgressPressed.bind(this)}>
+            <Text style={styles.menu} >O O O</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onClassesPressed.bind(this)}>
+            <Text style={styles.menu} onPress={this.onClassesPressed.bind(this)}> ^^^</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onAddPressed.bind(this)}>
+            <Text style={styles.menu} > + </Text>
+          </TouchableHighlight>
+        </View>
 
-      <View
-      style={styles.topMenu}
-      >
-      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onInProgressPressed.bind(this)}>
-      <Text style={styles.menu} >O O O</Text>
-      </TouchableHighlight>
-      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onClassesPressed.bind(this)}>
-      <Text style={styles.menu} onPress={this.onClassesPressed.bind(this)}> ^^^</Text>
-      </TouchableHighlight>
-      <TouchableHighlight style={styles.button} underlayColor='#f9f6b8' onPress={this.onAddPressed.bind(this)}>
-      <Text style={styles.menu} > + </Text>
-      </TouchableHighlight>
-      </View>
-      <View
-      style={styles.head}
-      >
-      <Text
-      style={styles.time}
-      >
-      Today: {now}
-      </Text>
-      </View>
+        <View
+        style={styles.head}
+        >
+          <Text
+            style={styles.time}
+          >
+          Today: {now}
+        </Text>
+        </View>
       <View style={{flex: 1, justifyContent: 'flex-start'}}>
       <ListView
       style={{  marginTop: 1, paddingTop: 1}}
