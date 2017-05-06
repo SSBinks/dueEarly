@@ -112,7 +112,7 @@ class Assignment extends Component {
     PushNotificationIOS.addEventListener('localNotification', this._onLocalNotification);
     PushNotificationIOS.requestPermissions();
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     console.log("YOU BE A SCHEDULIN!")
     PushNotificationIOS.scheduleLocalNotification({
       fireDate: new Date().getDate(),

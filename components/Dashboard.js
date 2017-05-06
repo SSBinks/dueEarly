@@ -75,9 +75,6 @@ class Dashboard extends Component {
 
 
   appendAssignment() {
-    // if( this.state.info._id === undefined) {
-    //   this.updateProgress();
-    // }
     console.log('This is the percent' + this.state.info.progress);
     console.log('I am getting here!');
     const id = this.state.info._id;
@@ -130,6 +127,7 @@ class Dashboard extends Component {
     const percent = num * 100;
     const obj = this.state.info;
     obj.progress = percent;
+    console.log(">>>>>>>>>>>>>>>>" + obj);
     this.setState({ info: obj });
   }
 
@@ -180,7 +178,8 @@ class Dashboard extends Component {
     else {
       var tabColor = {backgroundColor: '#ffcccc', padding: 20  }
     }
-
+    let num = isNaN(parseInt(this.state.info.progress).toFixed(0)) ?
+     0 : parseInt(this.state.info.progress).toFixed(0);
     return (
       <View
         style={styles.container}
@@ -199,7 +198,7 @@ class Dashboard extends Component {
                 style={{ fontSize: 15, fontFamily: 'ChalkboardSE-Regular', letterSpacing: 0 }}
               >
                 This is Due: {moment(this.state.info.dueDate).utc().format('dddd[,] MMM Do')} {'\n'}
-                You are {parseInt(this.state.info.progress).toFixed(0)}% Complete{'\n'}
+                You are {num}% Complete{'\n'}
                 Your Daily Goal is: {parseInt(this.state.info.dailyGoal).toFixed(0)} {this.state.info.part}s {'\n'}
                 You are currently on {this.state.info.part}: {parseInt(this.state.info.completionAmount).toFixed(0)}
             </Text>
