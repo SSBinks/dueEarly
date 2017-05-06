@@ -15,8 +15,7 @@ There are a wide variety of mobile apps that help people organize, track and com
 + Make a clean and responsive site
 
 ## Demo
-
-[![Screenshot](./util/sticky-notes.jpg)](./util/App Demo.mov)
+![Demo](https://cloud.githubusercontent.com/assets/16868372/25776406/2b0dc0f6-3272-11e7-96b6-05a449aaf2a7.gif)
 
 ## Market Research
 ### Alternative Mobile Apps
