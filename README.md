@@ -16,7 +16,7 @@ There are a wide variety of mobile apps that help people organize, track and com
 
 ## Demo
 
-[!Screenshot](./util/App Demo.mov)
+[![Screenshot](./util/App Demo.mov)]
 
 ## Market Research
 ### Alternative Mobile Apps
