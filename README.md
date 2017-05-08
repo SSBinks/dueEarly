@@ -1,21 +1,25 @@
-# Capstone Product Plan
+# Capstone
 
-### Working Names
-+ Noble J
-+ Due Early
-+ Bridges
+## About
+Due: Early is a mobile app for iOS built in React Native. This app is targeted toward young adults studying at the tertiary level and beyond to help them track progress on specific tasks and automatically sets daily or weekly goals for the user. The backend [Whats-Due](https://github.com/SSBinks/whatsDue) was built with Nodejs, Express and MongoDb and was deployed using AWS.
 
+## Demo of Due: Early
+![Demo](https://cloud.githubusercontent.com/assets/16868372/25776406/2b0dc0f6-3272-11e7-96b6-05a449aaf2a7.gif)
+
+
+### Personal Learning Goals
++ Learn how to use React Native
++ Build my own APIs
++ Make a clean and responsive site
+
+### Presentation Slides
+These [Slides](https://docs.google.com/presentation/d/1KwwLi9ZMp-fln-fl3AQYyU4ZqrVxJPGcHApkMvBtaFE/edit#slide=id.p) accompanied my final presentation of my application in late January of 2017.
+
+# Project Proposal
+Below is my original project proposal
 
 ## Problem Statement
 There are a wide variety of mobile apps that help people organize, track and complete tasks and a few that specifically target students with homework, exams and other school specific tasks. However, most of these applications are created for students attending secondary institutions and can be quite rigid in terms of tracking class schedules, types of subjects one may take and how frequently assignments may be assigned. The aim of my mobile application is to assist students who are attending post-secondary or tertiary institutions keep track of progress on their assignments and progress throughout the duration of their study of project. The application will avoid being as rigid as some homework applications and yet will be more focused than general apps that track tasks.
-
-### Learning Goals
-+ Learn how to use React Native
-+ Become comfortable using other site's APIs
-+ Make a clean and responsive site
-
-## Demo
-![Demo](https://cloud.githubusercontent.com/assets/16868372/25776406/2b0dc0f6-3272-11e7-96b6-05a449aaf2a7.gif)
 
 ## Market Research
 ### Alternative Mobile Apps
@@ -40,25 +44,22 @@ _Limitations_: There seems to be complaints about formatting fonts and heading a
 ### Differentiation With My Application
 Due to the time constraint and the main goal of my application, I do not believe I will be able to address all the limitations that other users have found with other applications. I do want to make my mobile application more flexible when it comes to creating tasks that fall outside of a certain course. This would affect the relationship between courses and tasks. I would also want to make the way that courses occur and are scheduled to be flexible to accommodate a variety of institutions. Notifications would not only remind the user of when something is due but would also let them know their progress.
 
-##U sers of My App
+## Users of My App
 My user attends a post-secondary institution. The reason for this is that there tends to be more assignments that need to be worked on throughout a longer period of time rather than in an evening or over a weekend. For example, a student may only have four papers due throughout a term, but wouldn’t necessarily need or want to track their final paper until a certain point in the semester. My user may also be taking online or remote courses  so the scheduling of the actual class versus when things are due might be different.
 
 ## Proposed Technologies
 **Backend**
 + MongoDB
-+ (I wanted to use Node.js but it looks like I may need to use Rails)
-+ GoodReads API
-+ Google Calendar API
++ Node.js
++ Express
 
 **Frontend**
 + React Native
-+ Javascript
-+ Bootstrap
 + Moment.js
 
 ## Trello
 
 https://trello.com/b/KwLJVys7/capstone
 
-## WireFrame
+## Initial WireFrame
 [Main Page](https://wireframepro.mockflow.com/view/De38ba638756422322f439914f892e9f0)
